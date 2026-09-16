@@ -7,7 +7,7 @@
   font-size: 18px; color: var(--ink); font-synthesis: none;
 }
 * { box-sizing: border-box; }
-body { margin: 0; min-height: 100vh; padding: 22px; line-height: 1.45; background: radial-gradient(circle at 8% 4%, rgba(56,189,248,.08), transparent 24rem), var(--bg); }
+body { margin: 0; min-height: 100vh; padding: 22px; line-height: 1.45; background: linear-gradient(135deg,#eaf3f2,#f0f5fb 60%,#f7fafc); }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 button, input, select { font: inherit; }
@@ -28,12 +28,21 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
 .skip-link { position: fixed; top: -100px; left: 22px; z-index: 100; padding: 12px; background: white; }
 .skip-link:focus { top: 10px; }
 .app-shell { width: min(1320px,100%); margin: auto; overflow: hidden; border: 1px solid #e2e8f0; border-radius: 22px; background: white; box-shadow: 0 16px 42px rgba(15,23,42,.1); }
-.sidebar { padding: 20px 22px 0; background: #fff; border-bottom: 1px solid var(--line); }
-.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font-size: 25px; font-weight: 800; line-height: 1.3; }
+.sidebar { background: #fff; border-bottom: 1px solid var(--line); }
+.coastal-masthead { position: relative; isolation: isolate; display: flex; align-items: flex-end; min-height: 180px; padding: 24px; background: #174a4d; }
+.coastal-photos { position: absolute; inset: 0; z-index: -2; display: grid; grid-template-columns: 1.1fr 1fr 1fr; overflow: hidden; }
+.coastal-photos img { display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: cover; }
+.coastal-photos img:first-child { object-position: center 68%; }
+.coastal-photos img:nth-child(2) { object-position: center 52%; }
+.coastal-photos img:last-child { object-position: center 44%; }
+.coastal-photos img + img { border-left: 3px solid rgba(255,255,255,.5); }
+.coastal-masthead::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg,rgba(7,31,39,.78),rgba(7,31,39,.08) 82%); }
+.brand { display: inline-flex; align-items: center; gap: 12px; color: #fff; font-size: 25px; font-weight: 800; line-height: 1.3; text-shadow: 0 1px 6px #071f27; }
+.brand:focus-visible { outline-color: white; }
 .brand:hover { text-decoration: none; }
 .brand svg { flex-shrink: 0; }
 .brand-name { font-weight: 650; }
-.sidebar nav { display: flex; gap: 8px; margin-top: 18px; }
+.sidebar nav { display: flex; gap: 8px; padding: 0 16px; }
 .sidebar nav a { display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 10px 16px; color: var(--muted); border-bottom: 3px solid transparent; font-size: 16px; font-weight: 650; }
 .sidebar nav a > span { font-size: 18px; }
 .sidebar nav a:hover { background: var(--surface); text-decoration: none; }
@@ -69,7 +78,7 @@ main { padding: 24px; min-height: 440px; outline: none; }
 .section-heading h2 { margin: 0; }
 .topic-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
 .topic-card { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--line); border-radius: 14px; background: white; overflow: hidden; }
-.topic-card:hover { border-color: #a9c4ee; }
+.topic-card:hover { border-color: #a9c4ee; box-shadow: 0 4px 14px rgba(15,23,42,.06); }
 .topic-card-main { display: block; padding: 18px 20px 12px; color: var(--ink); flex: 1; }
 .topic-card-main:hover { text-decoration: none; }
 .topic-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -233,9 +242,9 @@ main { padding: 24px; min-height: 440px; outline: none; }
 @media (max-width:760px) {
   body { padding: 0; background: white; }
   .app-shell { border: 0; border-radius: 0; box-shadow: none; }
-  .sidebar { padding: 18px 18px 0; }
+  .coastal-masthead { min-height: 156px; padding: 20px 18px; }
   .brand { font-size: 23px; }
-  .sidebar nav { gap: 2px; justify-content: space-between; }
+  .sidebar nav { gap: 2px; padding: 0 8px; justify-content: space-between; }
   .sidebar nav a { justify-content: center; padding: 10px 12px; font-size: 15px; }
   main { padding: 20px 18px; }
   .page-footer { padding: 16px 18px; }
@@ -257,8 +266,9 @@ main { padding: 24px; min-height: 440px; outline: none; }
   h2 { font-size: 21px; }
   .brand { font-size: 20px; gap: 10px; }
   .brand svg { width: 30px; height: 30px; }
-  .sidebar { padding: 16px 14px 0; }
-  .sidebar nav { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 0; margin-top: 14px; }
+  .coastal-masthead { min-height: 140px; padding: 18px 14px; }
+  .coastal-photos { grid-template-columns: 1fr 1fr 1fr; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 0; padding: 0 8px; }
   .sidebar nav a { min-width: 0; padding: 10px 3px; font-size: 14px; gap: 5px; }
   .sidebar nav a > span { display: none; }
   main { padding: 20px 14px; }
