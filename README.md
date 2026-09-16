@@ -19,6 +19,8 @@ These are external lab launches, not embedded or copied applications. The hub do
 
 ## Review and practice
 
+- One Topics homepage links to all six modules; summary statistics live in Progress. Older `#/topics` bookmarks redirect to the homepage.
+- Each topic places Review, Interactive platform and Practise beside its title, wrapping below it on small screens.
 - Six review modules with suggested foundations and connections between concepts.
 - **42 fixed, editable questions:** six per topic, plus six questions connecting multiple topics; 19 numerical and 23 multiple-choice questions.
 - Topic practice, mixed revision, connecting problems and retries of questions most recently answered incorrectly.

@@ -38,21 +38,17 @@ function topicCard(t){
   return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span><span>${stats.count?`${stats.accuracy}% · ${stats.count} attempts`:''}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review →</a><a href="#/practice?topic=${t.id}" aria-label="Practise ${esc(t.title)}">Practise →</a><a class="platform-link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(t.title)} interactive platform in a new tab">Interactive platform <span aria-hidden="true">↗</span></a></div></article>`;
 }
 function home(){
-  const attempts=store.data.attempts,correct=attempts.filter(a=>a.correct).length;
-  return `${heading('Course overview','<a class="button primary" href="#/practice">Start practice →</a>')}
-  <div class="stat-strip"><div><strong>${reviewed().length}<span>/ ${topics.length}</span></strong><span>Topics reviewed</span></div><div><strong>${attempts.length}</strong><span>Attempts</span></div><div><strong>${attempts.length?`${Math.round(correct/attempts.length*100)}<span>%</span>`:'—'}</strong><span>Accuracy</span></div></div>
+  return `${heading('Topics','<a class="button primary" href="#/practice">Start practice →</a>')}
   <div class="topic-grid">${topics.map(topicCard).join('')}</div>`;
 }
-function topicLibrary(){return `${heading('Topics')}<div class="topic-grid">${topics.map(topicCard).join('')}</div>`;}
 function topicPage(t){
   const done=!!store.data.reviewed[t.id];
   const next=topicById(t.connection.nextId);
-  return `<a class="back-link" href="#/topics">← Topics</a><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><div class="topic-layout"><div class="topic-body">
+  return `<a class="back-link" href="#/">← Topics</a><header class="topic-header"><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><nav class="topic-actions" aria-label="Topic actions"><a class="button secondary current" href="#/topic/${t.id}" aria-current="page">Review</a>${launch(t)}<a class="button primary" href="#/practice?topic=${t.id}">Practise →</a></nav></header><div class="topic-layout"><div class="topic-body">
   <details class="review-section review-details"><summary><h2>Learning objectives</h2></summary><ul class="objective-list">${t.objectives.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>
   <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${esc(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${esc(q.formula)}</div><p>${esc(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section></section>
   <details class="review-section review-details"><summary><h2>Common misconceptions</h2></summary><div class="misconceptions">${t.misconceptions.map(m=>`<article><h3>${esc(m.claim)}</h3><p>${esc(m.correction)}</p></article>`).join('')}</div></details>
-  <section class="activity review-section"><h2>Explore</h2>${launch(t)}<details class="review-details"><summary>${esc(t.guidedActivity.title)}</summary><ol class="steps">${t.guidedActivity.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="reflection"><strong>Pause and explain</strong><p>${esc(t.guidedActivity.reflection)}</p></div></details></section>
-  <section class="review-section practice-callout"><h2>Practise</h2><a class="button primary" href="#/practice?topic=${t.id}">Start 6 questions →</a></section>
+  <details class="review-section review-details"><summary><h2>Guided activity</h2></summary><h3>${esc(t.guidedActivity.title)}</h3><ol class="steps">${t.guidedActivity.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="reflection"><strong>Pause and explain</strong><p>${esc(t.guidedActivity.reflection)}</p></div></details>
   <details class="connection review-details"><summary><h2>${esc(t.connection.title)}</h2></summary><p>${esc(t.connection.text)}</p>${next?`<a class="quiet-link" href="#/topic/${next.id}">${esc(next.title)} →</a>`:'<a class="quiet-link" href="#/practice?mode=connect">Connect concepts →</a>'}</details></div>
   <aside class="topic-side"><div class="side-card"><button class="button ${done?'secondary':'primary'} full" data-action="review" data-topic="${t.id}" aria-pressed="${done}">${done?'✓ Reviewed':'Mark as reviewed'}</button>${t.prerequisites.length?`<hr><h2>Prerequisites</h2>${t.prerequisites.map(id=>`<a class="side-link" href="#/topic/${id}">${esc(topicName(id))} →</a>`).join('')}`:''}</div></aside></div>`;
 }
@@ -98,20 +94,19 @@ function render(){
   const [path,search='']=hash.split('?');
   const params=new URLSearchParams(search);
   const page=path.split('/')[1]||'home';
-  const active=page==='topic'?'topics':page;
+  const active=page==='topic'?'home':page;
   document.querySelectorAll('[data-nav]').forEach(a=>{const selected=a.dataset.nav===active;a.classList.toggle('active',selected);selected?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current');});
-  const labels={home:'Course overview',topics:'Topics',topic:'Topic review',practice:'Practice',progress:'My progress'};
-  document.getElementById('pageLabel').textContent=labels[page]||'Overview';
+  const labels={home:'Topics',topic:'Topic review',practice:'Practice',progress:'My progress'};
+  document.getElementById('pageLabel').textContent=labels[page]||'Topics';
   let html;
   if(page==='home')html=home();
-  else if(page==='topics')html=topicLibrary();
-  else if(page==='topic'){const t=topicById(path.split('/')[2]);html=t?topicPage(t):`${heading('Topic not found')}<a class="button primary" href="#/topics">Topics →</a>`;}
+  else if(page==='topic'){const t=topicById(path.split('/')[2]);html=t?topicPage(t):`${heading('Topic not found')}<a class="button primary" href="#/">Topics →</a>`;}
   else if(page==='practice')html=runVisible?questionView():practiceBuilder();
   else if(page==='progress')html=progressPage();
-  else html=`${heading('Page not found')}<a class="button primary" href="#/">Course overview →</a>`;
+  else html=`${heading('Page not found')}<a class="button primary" href="#/">Topics →</a>`;
   main.innerHTML=(!store.available?'<div class="storage-alert" role="status">Browser storage is unavailable. You can practise, but progress may not survive closing this page.</div>':'')+html;
   void renderEquations(main);
-  document.title=`${page==='topic'?topicName(path.split('/')[2]):labels[page]||'Overview'} · CE2134 Learning Hub`;
+  document.title=`${page==='topic'?topicName(path.split('/')[2]):labels[page]||'Topics'} · CE2134 Learning Hub`;
 }
 function toast(text){clearTimeout(toastTimer);const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');toastTimer=setTimeout(()=>el.classList.remove('show'),3000);}
 function begin(ids,mode){
@@ -121,6 +116,7 @@ function begin(ids,mode){
 }
 function onRoute(){
   runVisible=false;formError='';
+  if(location.hash.split('?')[0]==='#/topics')history.replaceState(null,'','#/');
   const params=new URLSearchParams((location.hash.split('?')[1]||''));
   if(topicById(params.get('topic'))){builder.mode='topic';builder.topic=params.get('topic');builder.count=6;}
   else if(['mixed','connect','retry'].includes(params.get('mode'))){builder.mode=params.get('mode');builder.count=6;}
