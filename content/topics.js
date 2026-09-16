@@ -19,16 +19,19 @@ export const topics = [
       {
         label: 'A single fluid',
         formula: 'p = p_surface + ρgh',
+        tex: String.raw`p = p_{\mathrm{surface}} + \rho g h`,
         note: 'h is vertical depth below the reference surface. For a surface open to the atmosphere, gauge pressure is ρgh. Use g = 9.80 m/s².'
       },
       {
         label: 'Pressure reference',
         formula: 'p_absolute = p_gauge + p_atmospheric',
+        tex: String.raw`p_{\mathrm{absolute}} = p_{\mathrm{gauge}} + p_{\mathrm{atmospheric}}`,
         note: 'Gauge pressure is measured relative to atmospheric pressure. A negative gauge value means below atmospheric pressure.'
       },
       {
         label: 'Layered fluids',
         formula: 'p_bottom = p_top + ρ₁gh₁ + ρ₂gh₂',
+        tex: String.raw`p_{\mathrm{bottom}} = p_{\mathrm{top}} + \rho_1 g h_1 + \rho_2 g h_2`,
         note: 'Add ρg times the vertical distance travelled downward in each layer; subtract it when travelling upward.'
       }
     ],
@@ -87,16 +90,19 @@ export const topics = [
       {
         label: 'Plane-surface resultant',
         formula: 'F = ρgh_cA',
+        tex: String.raw`F = \rho g h_{\mathrm{c}} A`,
         note: 'A is the actual wetted plane area and h_c is its centroid’s vertical depth. The resultant acts normal to the surface.'
       },
       {
         label: 'Centre of pressure',
         formula: 'h_cp = h_c + I_G sin²θ / (A h_c)',
+        tex: String.raw`h_{\mathrm{cp}} = h_{\mathrm{c}} + \frac{I_{\mathrm{G}}\sin^2\theta}{A h_{\mathrm{c}}}`,
         note: 'θ is the plane’s angle to the horizontal. I_G is the second moment of area about its centroidal axis parallel to the free surface. This form uses gauge pressure zero at that free surface.'
       },
       {
         label: 'Curved-surface components',
         formula: '|F_H| = ρg h_projection A_projection;  |F_V| = ρg V_imaginary',
+        tex: String.raw`\begin{aligned}|F_{\mathrm{H}}| &= \rho g h_{\mathrm{projection}} A_{\mathrm{projection}} \\ |F_{\mathrm{V}}| &= \rho g V_{\mathrm{imaginary}}\end{aligned}`,
         note: 'Use the vertical projection for F_H. V_imaginary is the fluid volume between the curved surface and the free-surface plane. Determine each direction from the wetted side and a force balance; combine with F = √(F_H² + F_V²).'
       }
     ],
@@ -155,11 +161,13 @@ export const topics = [
       {
         label: 'Streamline: freeze the time',
         formula: 'dy/dx = v(x, y, t₀) / u(x, y, t₀)',
+        tex: String.raw`\frac{\mathrm{d}y}{\mathrm{d}x} = \frac{v(x,y,t_0)}{u(x,y,t_0)}`,
         note: 'The tangent follows the instantaneous velocity field at one fixed time t₀. This slope form assumes u is nonzero.'
       },
       {
         label: 'Pathline: follow one particle',
         formula: 'dx/dt = u(x, y, t);  dy/dt = v(x, y, t)',
+        tex: String.raw`\begin{aligned}\frac{\mathrm{d}x}{\mathrm{d}t} &= u(x,y,t) \\ \frac{\mathrm{d}y}{\mathrm{d}t} &= v(x,y,t)\end{aligned}`,
         note: 'The same particle moves through the field as time advances. Its previous positions form the pathline.'
       },
       {
@@ -223,16 +231,19 @@ export const topics = [
       {
         label: 'Account for accumulation',
         formula: 'dm_CV/dt = ṁ_in − ṁ_out',
+        tex: String.raw`\frac{\mathrm{d}m_{\mathrm{CV}}}{\mathrm{d}t} = \dot{m}_{\mathrm{in}} - \dot{m}_{\mathrm{out}}`,
         note: 'Mass can accumulate in a general control volume. In this steady-flow model, accumulation is zero.'
       },
       {
         label: 'Steady, one inlet and one outlet',
         formula: 'ρ₁V₁A₁ = ρ₂V₂A₂;  A = πD²/4',
+        tex: String.raw`\begin{aligned}\rho_1 V_1 A_1 &= \rho_2 V_2 A_2 \\ A &= \frac{\pi D^2}{4}\end{aligned}`,
         note: 'With uniform section values, V₂ = (ρ₁/ρ₂)(D₁/D₂)²V₁. The wall contributes no through-flow.'
       },
       {
         label: 'Volume flow and mass flow',
         formula: 'Q = VA;  ṁ = ρQ',
+        tex: String.raw`Q = VA, \qquad \dot{m} = \rho Q`,
         note: 'Q is measured in m³/s; ṁ is measured in kg/s. Equal densities give Q₁ = Q₂ here; unequal densities can give Q₁ ≠ Q₂ while conserving mass.'
       }
     ],
@@ -291,16 +302,19 @@ export const topics = [
       {
         label: 'Ideal mechanical-energy balance',
         formula: 'p₁/(ρg) + v₁²/(2g) + z₁ = p₂/(ρg) + v₂²/(2g) + z₂',
+        tex: String.raw`\begin{aligned}&\frac{p_1}{\rho g} + \frac{v_1^2}{2g} + z_1 \\ &\qquad = \frac{p_2}{\rho g} + \frac{v_2^2}{2g} + z_2\end{aligned}`,
         note: 'Pressure head, velocity head and elevation head all have units of metres. Use one pressure reference consistently and g = 9.80 m/s².'
       },
       {
         label: 'Hydraulic grade line',
         formula: 'HGL = z + p/(ρg)',
+        tex: String.raw`\mathrm{HGL} = z + \frac{p}{\rho g}`,
         note: 'The vertical difference HGL − z is pressure head. With gauge pressure, HGL below the pipe centreline indicates negative gauge pressure.'
       },
       {
         label: 'Energy grade line',
         formula: 'EGL = HGL + v²/(2g)',
+        tex: String.raw`\mathrm{EGL} = \mathrm{HGL} + \frac{v^2}{2g}`,
         note: 'The gap EGL − HGL is velocity head. For this model without pumps, turbines or losses, EGL is constant along the flow.'
       }
     ],
@@ -359,16 +373,19 @@ export const topics = [
       {
         label: 'Force on the fluid',
         formula: 'ΣF_on fluid = ṁ(V_out − V_in)',
+        tex: String.raw`\sum \vec{F}_{\mathrm{on\ fluid}} = \dot{m}\left(\vec{V}_{\mathrm{out}} - \vec{V}_{\mathrm{in}}\right)`,
         note: 'This is a vector balance for steady flow with one inlet and one outlet. Include all relevant external forces for the chosen control volume.'
       },
       {
         label: 'Force on the vane in this model',
         formula: 'F_x = ρAV²(1 − cosθ);  F_y = ρAV² sinθ',
+        tex: String.raw`\begin{aligned}F_x &= \rho A V^2(1-\cos\theta) \\ F_y &= \rho A V^2\sin\theta\end{aligned}`,
         note: 'The incoming jet points right. θ is the downward deflection from that direction, from 0° to 180°. Positive force on the vane is rightward in x and upward in y.'
       },
       {
         label: 'Jet flow and resultant',
         formula: 'A = πD²/4;  ṁ = ρAV;  F = √(F_x² + F_y²)',
+        tex: String.raw`\begin{aligned}A &= \frac{\pi D^2}{4}, \qquad \dot{m} = \rho AV \\ F &= \sqrt{F_x^2 + F_y^2}\end{aligned}`,
         note: 'Water density is 1000 kg/m³ in the app. At a fixed diameter and deflection angle, each force component scales with V².'
       }
     ],

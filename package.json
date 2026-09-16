@@ -4,6 +4,15 @@
   "private": true,
   "type": "module",
   "description": "A connected review and practice hub for CE2134 fluid mechanics.",
-  "scripts": {"dev": "node scripts/serve.mjs", "build": "node scripts/build.mjs", "test": "node --test tests/*.test.js"},
-  "engines": {"node": ">=18"}
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "mathjax": "4.1.3"
+  }
 }

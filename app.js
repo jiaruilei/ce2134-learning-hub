@@ -2,6 +2,7 @@ import {topics} from './content/topics.js';
 import {questions} from './content/questions.js';
 import {gradeQuestion,makeSet,latestMissed,topicStats,validSession} from './lib/practice.js';
 import {createStore} from './lib/storage.js';
+import {renderEquations} from './lib/math.js';
 
 const main=document.querySelector('main');
 let browserStorage;try{browserStorage=window.localStorage;}catch{}
@@ -31,10 +32,10 @@ function icon(id){
   return `<svg width="52" height="52" viewBox="0 0 54 52" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[id]||paths.flowlines}</svg>`;
 }
 function heading(title,extra=''){return `<div class="page-heading"><h1>${title}</h1>${extra}</div>`;}
-function launch(t,label='Open lab'){return `<a class="button secondary" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>`;}
+function launch(t,label='Interactive platform'){return `<a class="button secondary" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>`;}
 function topicCard(t){
   const stats=topicStats(store.data.attempts,t.id);
-  return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span><span>${stats.count?`${stats.accuracy}% · ${stats.count} attempts`:''}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review →</a><a href="#/practice?topic=${t.id}" aria-label="Practise ${esc(t.title)}">Practise →</a><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(t.title)} lab in a new tab">Lab <span aria-hidden="true">↗</span></a></div></article>`;
+  return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span><span>${stats.count?`${stats.accuracy}% · ${stats.count} attempts`:''}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review →</a><a href="#/practice?topic=${t.id}" aria-label="Practise ${esc(t.title)}">Practise →</a><a class="platform-link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(t.title)} interactive platform in a new tab">Interactive platform <span aria-hidden="true">↗</span></a></div></article>`;
 }
 function home(){
   const attempts=store.data.attempts,correct=attempts.filter(a=>a.correct).length;
@@ -48,7 +49,7 @@ function topicPage(t){
   const next=topicById(t.connection.nextId);
   return `<a class="back-link" href="#/topics">← Topics</a><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><div class="topic-layout"><div class="topic-body">
   <details class="review-section review-details"><summary><h2>Learning objectives</h2></summary><ul class="objective-list">${t.objectives.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>
-  <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${esc(q.label)}</span><strong>${esc(q.formula)}</strong><p>${esc(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section></section>
+  <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${esc(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${esc(q.formula)}</div><p>${esc(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section></section>
   <details class="review-section review-details"><summary><h2>Common misconceptions</h2></summary><div class="misconceptions">${t.misconceptions.map(m=>`<article><h3>${esc(m.claim)}</h3><p>${esc(m.correction)}</p></article>`).join('')}</div></details>
   <section class="activity review-section"><h2>Explore</h2>${launch(t)}<details class="review-details"><summary>${esc(t.guidedActivity.title)}</summary><ol class="steps">${t.guidedActivity.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="reflection"><strong>Pause and explain</strong><p>${esc(t.guidedActivity.reflection)}</p></div></details></section>
   <section class="review-section practice-callout"><h2>Practise</h2><a class="button primary" href="#/practice?topic=${t.id}">Start 6 questions →</a></section>
@@ -62,7 +63,7 @@ function practiceBuilder(){
   const modes=[['mixed','↗','Mixed revision','All 6 topics'],['topic','◎','One topic','Focused practice'],['connect','⤴','Connect concepts','Combined topics'],['retry','↻','Retry mistakes',`${missed} question${missed===1?'':'s'}`]];
   return `${heading('Practice')}<div class="practice-layout ${saved&&!saved.finished?'has-resume':''}"><section class="builder-card"><h2>Practice mode</h2><div class="practice-modes">${modes.map(([id,symbol,title,desc])=>`<button class="mode-card ${builder.mode===id?'selected':''}" data-action="mode" data-mode="${id}" aria-pressed="${builder.mode===id}" ${id==='retry'&&!missed?'disabled':''}><span class="mode-symbol" aria-hidden="true">${symbol}</span><strong>${title}</strong><span>${desc}</span><i aria-hidden="true">${builder.mode===id?'●':'○'}</i></button>`).join('')}</div>
   <div class="builder-controls">${builder.mode==='topic'?`<label>Topic<select id="practiceTopic">${topics.map(t=>`<option value="${t.id}" ${t.id===builder.topic?'selected':''}>${esc(t.title)}</option>`).join('')}</select></label>`:''}<label>Set length<select id="practiceCount"><option value="6" ${builder.count===6?'selected':''}>${builder.mode==='retry'?'Up to ':''}6 questions</option>${builder.mode==='mixed'||builder.mode==='retry'&&missed>6?`<option value="12" ${builder.count===12?'selected':''}>${builder.mode==='retry'?'Up to ':''}12 questions</option>`:''}</select></label></div><button class="button primary" data-action="start" ${builder.mode==='retry'&&!missed?'disabled':''}>Start practice <span aria-hidden="true">→</span></button></section>
-  ${saved&&!saved.finished?`<aside class="practice-side"><div class="resume-card"><h2>Saved session</h2><p>${Object.keys(saved.answers).length} / ${saved.ids.length} questions checked</p><button class="button secondary full" data-action="resume">Resume practice →</button><p class="small-note">A new set replaces this session. Checked answers remain in My progress.</p></div></aside>`:''}</div><p class="small-note">Progress stays in this browser; lab activity and instructor records are separate.</p>`;
+  ${saved&&!saved.finished?`<aside class="practice-side"><div class="resume-card"><h2>Saved session</h2><p>${Object.keys(saved.answers).length} / ${saved.ids.length} questions checked</p><button class="button secondary full" data-action="resume">Resume practice →</button><p class="small-note">A new set replaces this session. Checked answers remain in My progress.</p></div></aside>`:''}</div><p class="small-note">Progress stays in this browser; platform activity and instructor records are separate.</p>`;
 }
 function questionView(){
   const session=store.data.session;
@@ -89,7 +90,7 @@ function progressPage(){
   const attempts=store.data.attempts,correct=attempts.filter(a=>a.correct).length,missed=latestMissed(attempts);
   return `${heading('My progress')}<div class="progress-summary"><div><strong>${reviewed().length}<span> / 6</span></strong><p>Topics reviewed</p></div><div><strong>${attempts.length}</strong><p>Attempts</p></div><div><strong>${attempts.length?`${Math.round(correct/attempts.length*100)}%`:'—'}</strong><p>Accuracy</p></div></div>
   ${!attempts.length?`<div class="empty-state"><p>No practice attempts yet.</p><a class="button primary" href="#/practice">Start practice →</a></div>`:''}<section class="section-block"><div class="section-heading"><h2>By topic</h2>${missed.length?`<a class="quiet-link" href="#/practice?mode=retry">Retry ${missed.length} missed questions →</a>`:''}</div><div class="progress-topics">${topics.map(t=>{const s=topicStats(attempts,t.id);return `<article><span class="topic-icon" style="--topic-color:${esc(t.color)}">${icon(t.id)}</span><div class="progress-topic-name"><a href="#/topic/${t.id}">${esc(t.title)}</a><small>${store.data.reviewed[t.id]?'✓ Reviewed':'Not reviewed'}</small></div><div class="topic-score"><strong>${s.count?`${s.accuracy}%`:'—'}</strong><small>${s.count} attempt${s.count===1?'':'s'}</small></div><a class="button secondary compact" href="#/practice?topic=${t.id}">Practise <span class="sr-only">${esc(t.title)}</span> →</a></article>`;}).join('')}</div></section>
-  <section class="data-note"><p>Progress stays in this browser and is not sent to your instructor or synced across devices. Activity in the separate labs is not included.</p><button class="button secondary" data-action="export-progress">Download my record ↓</button></section>${attempts.length?`<details class="clear-progress"><summary>Manage record</summary><p>Clearing removes your attempts, review checklist, and saved session.</p><button class="text-button danger" data-action="clear-progress">Clear this browser’s record</button></details>`:''}`;
+  <section class="data-note"><p>Progress stays in this browser and is not sent to your instructor or synced across devices. Activity in the separate interactive platforms is not included.</p><button class="button secondary" data-action="export-progress">Download my record ↓</button></section>${attempts.length?`<details class="clear-progress"><summary>Manage record</summary><p>Clearing removes your attempts, review checklist, and saved session.</p><button class="text-button danger" data-action="clear-progress">Clear this browser’s record</button></details>`:''}`;
 }
 
 function render(){
@@ -109,6 +110,7 @@ function render(){
   else if(page==='progress')html=progressPage();
   else html=`${heading('Page not found')}<a class="button primary" href="#/">Course overview →</a>`;
   main.innerHTML=(!store.available?'<div class="storage-alert" role="status">Browser storage is unavailable. You can practise, but progress may not survive closing this page.</div>':'')+html;
+  void renderEquations(main);
   document.title=`${page==='topic'?topicName(path.split('/')[2]):labels[page]||'Overview'} · CE2134 Learning Hub`;
 }
 function toast(text){clearTimeout(toastTimer);const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');toastTimer=setTimeout(()=>el.classList.remove('show'),3000);}
@@ -136,7 +138,7 @@ main.addEventListener('click',event=>{
   if(action==='next'){const s=store.data.session;if(!s.answers[s.ids[s.index]])return;if(s.index===s.ids.length-1)s.finished=true;else s.index++;store.save();formError='';render();main.focus();window.scrollTo({top:0});}
   if(action==='retry-session'){const s=store.data.session;begin(s.ids.filter(id=>!s.answers[id]?.correct),'retry');}
   if(action==='export-progress'){
-    const data={...store.data,session:null,exportedAt:new Date().toISOString(),note:'Hub practice in this browser only; no external lab activity.'};
+    const data={...store.data,session:null,exportedAt:new Date().toISOString(),note:'Hub practice in this browser only; no external platform activity.'};
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`ce2134-progress-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
   if(action==='clear-progress'&&window.confirm('Clear this browser’s hub practice, review checklist, and saved session? Download your record first if you want to keep a copy.')){store.clear();render();toast('This browser’s hub record has been cleared.');}
