@@ -21,6 +21,8 @@ These are external lab launches, not embedded or copied applications. The hub do
 
 - One Topics homepage links to all six modules; summary statistics live in Progress. Older `#/topics` bookmarks redirect to the homepage.
 - Each topic places Review, Interactive platform and Practise beside its title, wrapping below it on small screens.
+- Topic Practise links start six questions immediately, or resume the unfinished set for that topic. A different unfinished set stays intact until the student explicitly chooses to replace it; checked answers remain in Progress.
+- Practice prioritises Resume for unfinished sessions, with custom modes and set lengths on a separate Custom settings page. Active practice has a stable route so refreshing preserves its question order and progress.
 - Six review modules with suggested foundations and connections between concepts.
 - **42 fixed, editable questions:** six per topic, plus six questions connecting multiple topics; 19 numerical and 23 multiple-choice questions.
 - Topic practice, mixed revision, connecting problems and retries of questions most recently answered incorrectly.

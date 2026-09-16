@@ -3,6 +3,7 @@ import {questions} from './content/questions.js';
 import {gradeQuestion,makeSet,latestMissed,topicStats,validSession} from './lib/practice.js';
 import {createStore} from './lib/storage.js';
 import {renderEquations} from './lib/math.js';
+import {hasUnfinishedSession,topicPracticeAction} from './lib/practice-flow.js';
 
 const main=document.querySelector('main');
 let browserStorage;try{browserStorage=window.localStorage;}catch{}
@@ -11,7 +12,7 @@ store.data.session=validSession(store.data.session,questions);
 const knownQuestions=new Set(questions.map(q=>q.id));
 store.data.attempts=store.data.attempts.filter(a=>knownQuestions.has(a.questionId));
 const builder={mode:'mixed',topic:'pressure',count:6};
-let runVisible=false,formError='',toastTimer;
+let runVisible=false,customVisible=false,pendingSet=null,formError='',toastTimer;
 const drafts={};
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const topicById=id=>topics.find(t=>t.id===id);
@@ -38,7 +39,7 @@ function topicCard(t){
   return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span><span>${stats.count?`${stats.accuracy}% · ${stats.count} attempts`:''}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review →</a><a href="#/practice?topic=${t.id}" aria-label="Practise ${esc(t.title)}">Practise →</a><a class="platform-link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(t.title)} interactive platform in a new tab">Interactive platform <span aria-hidden="true">↗</span></a></div></article>`;
 }
 function home(){
-  return `${heading('Topics','<a class="button primary" href="#/practice">Start practice →</a>')}
+  return `${heading('Topics',hasUnfinishedSession(store.data.session)?'<a class="button primary" href="#/practice?run=1">Resume practice →</a>':'<a class="button primary" href="#/practice">Start practice →</a>')}
   <div class="topic-grid">${topics.map(topicCard).join('')}</div>`;
 }
 function topicPage(t){
@@ -53,17 +54,30 @@ function topicPage(t){
   <aside class="topic-side"><div class="side-card"><button class="button ${done?'secondary':'primary'} full" data-action="review" data-topic="${t.id}" aria-pressed="${done}">${done?'✓ Reviewed':'Mark as reviewed'}</button>${t.prerequisites.length?`<hr><h2>Prerequisites</h2>${t.prerequisites.map(id=>`<a class="side-link" href="#/topic/${id}">${esc(topicName(id))} →</a>`).join('')}`:''}</div></aside></div>`;
 }
 
-function practiceBuilder(){
+function setName(options){
+  return options.mode==='topic'?topicName(options.topic):({mixed:'Mixed revision',connect:'Connecting concepts',retry:'Retry mistakes'}[options.mode]||'Practice');
+}
+function resumeCard(){
   const saved=store.data.session;
+  if(!hasUnfinishedSession(saved))return '';
+  const topic=questions.find(q=>q.id===saved.ids[0])?.topic;
+  return `<section class="resume-card"><div><h2>Continue practice</h2><p>${esc(setName({mode:saved.mode,topic}))} · ${Object.keys(saved.answers).length} / ${saved.ids.length} checked</p></div><a class="button primary" href="#/practice?run=1">Resume practice →</a></section>`;
+}
+function practiceHome(){
+  return `${heading('Practice','<a class="quiet-link" href="#/practice?settings=1">Custom settings →</a>')}<div class="practice-layout">${hasUnfinishedSession(store.data.session)?resumeCard():`<section class="quick-practice"><div><h2>Mixed revision</h2><p>6 questions · All 6 topics</p></div><button class="button primary" data-action="quick-start">Start 6 questions →</button></section>`}</div>`;
+}
+function practiceChoice(){
+  return `${heading('Practice','<a class="quiet-link" href="#/practice?settings=1">Custom settings →</a>')}<div class="practice-layout">${resumeCard()}<section class="new-set-card"><h2>${esc(pendingSet.label)}</h2><p>${pendingSet.ids.length} questions. Starting this set replaces your unfinished session. Checked answers stay in Progress.</p><button class="button secondary" data-action="replace-session">Start this set instead →</button></section></div>`;
+}
+function practiceBuilder(){
   const missed=latestMissed(store.data.attempts).length;
   const modes=[['mixed','↗','Mixed revision','All 6 topics'],['topic','◎','One topic','Focused practice'],['connect','⤴','Connect concepts','Combined topics'],['retry','↻','Retry mistakes',`${missed} question${missed===1?'':'s'}`]];
-  return `${heading('Practice')}<div class="practice-layout ${saved&&!saved.finished?'has-resume':''}"><section class="builder-card"><h2>Practice mode</h2><div class="practice-modes">${modes.map(([id,symbol,title,desc])=>`<button class="mode-card ${builder.mode===id?'selected':''}" data-action="mode" data-mode="${id}" aria-pressed="${builder.mode===id}" ${id==='retry'&&!missed?'disabled':''}><span class="mode-symbol" aria-hidden="true">${symbol}</span><strong>${title}</strong><span>${desc}</span><i aria-hidden="true">${builder.mode===id?'●':'○'}</i></button>`).join('')}</div>
-  <div class="builder-controls">${builder.mode==='topic'?`<label>Topic<select id="practiceTopic">${topics.map(t=>`<option value="${t.id}" ${t.id===builder.topic?'selected':''}>${esc(t.title)}</option>`).join('')}</select></label>`:''}<label>Set length<select id="practiceCount"><option value="6" ${builder.count===6?'selected':''}>${builder.mode==='retry'?'Up to ':''}6 questions</option>${builder.mode==='mixed'||builder.mode==='retry'&&missed>6?`<option value="12" ${builder.count===12?'selected':''}>${builder.mode==='retry'?'Up to ':''}12 questions</option>`:''}</select></label></div><button class="button primary" data-action="start" ${builder.mode==='retry'&&!missed?'disabled':''}>Start practice <span aria-hidden="true">→</span></button></section>
-  ${saved&&!saved.finished?`<aside class="practice-side"><div class="resume-card"><h2>Saved session</h2><p>${Object.keys(saved.answers).length} / ${saved.ids.length} questions checked</p><button class="button secondary full" data-action="resume">Resume practice →</button><p class="small-note">A new set replaces this session. Checked answers remain in My progress.</p></div></aside>`:''}</div><p class="small-note">Progress stays in this browser; platform activity and instructor records are separate.</p>`;
+  return `<a class="back-link" href="#/practice">← Practice</a>${heading('Custom practice')}<div class="practice-layout">${resumeCard()}<section class="builder-card"><h2>Practice mode</h2><div class="practice-modes">${modes.map(([id,symbol,title,desc])=>`<button class="mode-card ${builder.mode===id?'selected':''}" data-action="mode" data-mode="${id}" aria-pressed="${builder.mode===id}" ${id==='retry'&&!missed?'disabled':''}><span class="mode-symbol" aria-hidden="true">${symbol}</span><strong>${title}</strong><span>${desc}</span><i aria-hidden="true">${builder.mode===id?'●':'○'}</i></button>`).join('')}</div>
+  <div class="builder-controls">${builder.mode==='topic'?`<label>Topic<select id="practiceTopic">${topics.map(t=>`<option value="${t.id}" ${t.id===builder.topic?'selected':''}>${esc(t.title)}</option>`).join('')}</select></label>`:''}<label>Set length<select id="practiceCount"><option value="6" ${builder.count===6?'selected':''}>${builder.mode==='retry'?'Up to ':''}6 questions</option>${builder.mode==='mixed'||builder.mode==='retry'&&missed>6?`<option value="12" ${builder.count===12?'selected':''}>${builder.mode==='retry'?'Up to ':''}12 questions</option>`:''}</select></label></div><button class="button ${hasUnfinishedSession(store.data.session)?'secondary':'primary'}" data-action="start" ${builder.mode==='retry'&&!missed?'disabled':''}>Start practice <span aria-hidden="true">→</span></button></section></div><p class="small-note">Progress stays in this browser; platform activity and instructor records are separate.</p>`;
 }
 function questionView(){
   const session=store.data.session;
-  if(!session)return practiceBuilder();
+  if(!session)return practiceHome();
   if(session.finished)return resultView();
   const q=questions.find(item=>item.id===session.ids[session.index]);
   const answer=session.answers[q.id],draft=answer?.value??drafts[q.id]??'';
@@ -101,7 +115,7 @@ function render(){
   let html;
   if(page==='home')html=home();
   else if(page==='topic'){const t=topicById(path.split('/')[2]);html=t?topicPage(t):`${heading('Topic not found')}<a class="button primary" href="#/">Topics →</a>`;}
-  else if(page==='practice')html=runVisible?questionView():practiceBuilder();
+  else if(page==='practice')html=runVisible?questionView():pendingSet?practiceChoice():customVisible?practiceBuilder():practiceHome();
   else if(page==='progress')html=progressPage();
   else html=`${heading('Page not found')}<a class="button primary" href="#/">Topics →</a>`;
   main.innerHTML=(!store.available?'<div class="storage-alert" role="status">Browser storage is unavailable. You can practise, but progress may not survive closing this page.</div>':'')+html;
@@ -109,17 +123,43 @@ function render(){
   document.title=`${page==='topic'?topicName(path.split('/')[2]):labels[page]||'Topics'} · CE2134 Learning Hub`;
 }
 function toast(text){clearTimeout(toastTimer);const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');toastTimer=setTimeout(()=>el.classList.remove('show'),3000);}
-function begin(ids,mode){
+function showSession(replaceRoute=false){
+  if(replaceRoute||location.hash!=='#/practice?run=1')history[replaceRoute?'replaceState':'pushState'](null,'','#/practice?run=1');
+  pendingSet=null;runVisible=true;formError='';render();window.scrollTo({top:0});main.focus({preventScroll:true});
+}
+function begin(ids,mode,replaceRoute=false){
   if(!ids.length){toast('Complete some practice before retrying mistakes.');return;}
   for(const id of Object.keys(drafts))delete drafts[id];
-  store.data.session={id:crypto.randomUUID(),ids,index:0,answers:{},hints:{},mode,finished:false};store.save();runVisible=true;formError='';render();main.focus();window.scrollTo({top:0});
+  store.data.session={id:crypto.randomUUID(),ids,index:0,answers:{},hints:{},mode,finished:false};store.save();showSession(replaceRoute);
+}
+function requestSet(options,replaceRoute=false){
+  const ids=makeSet(questions,{...options,attempts:store.data.attempts});
+  if(!ids.length){toast('Complete some practice before retrying mistakes.');return;}
+  if(!hasUnfinishedSession(store.data.session)){begin(ids,options.mode,replaceRoute);return;}
+  pendingSet={ids,mode:options.mode,label:setName(options),replaceRoute};
+  // A choice is not a start command: refreshing or going Back must keep the saved set.
+  if(location.hash!=='#/practice')history[replaceRoute?'replaceState':'pushState'](null,'','#/practice');
+  runVisible=false;formError='';render();window.scrollTo({top:0});main.focus({preventScroll:true});
 }
 function onRoute(){
-  runVisible=false;formError='';
+  runVisible=false;customVisible=false;pendingSet=null;formError='';
   if(location.hash.split('?')[0]==='#/topics')history.replaceState(null,'','#/');
-  const params=new URLSearchParams((location.hash.split('?')[1]||''));
-  if(topicById(params.get('topic'))){builder.mode='topic';builder.topic=params.get('topic');builder.count=6;}
-  else if(['mixed','connect','retry'].includes(params.get('mode'))){builder.mode=params.get('mode');builder.count=6;}
+  const [path,search='']=location.hash.slice(1).split('?');
+  const params=new URLSearchParams(search);
+  if(path==='/practice'){
+    const topic=params.get('topic'),mode=params.get('mode');
+    customVisible=params.get('settings')==='1'||['mixed','connect','retry'].includes(mode);
+    if(topicById(topic)){builder.mode='topic';builder.topic=topic;builder.count=6;}
+    else if(['mixed','connect','retry'].includes(mode)){builder.mode=mode;builder.count=6;}
+    if(params.get('run')==='1'){
+      if(store.data.session)runVisible=true;
+      else history.replaceState(null,'','#/practice');
+    }else if(topicById(topic)&&!customVisible){
+      const action=topicPracticeAction(store.data.session,topic,questions);
+      if(action==='resume'){showSession(true);return;}
+      if(action==='start'||action==='choose'){requestSet({mode:'topic',topic,count:6},true);return;}
+    }
+  }
   render();window.scrollTo({top:0});main.focus({preventScroll:true});
 }
 main.addEventListener('click',event=>{
@@ -127,9 +167,10 @@ main.addEventListener('click',event=>{
   const action=button.dataset.action;
   if(action==='review'){const id=button.dataset.topic;if(store.data.reviewed[id])delete store.data.reviewed[id];else store.data.reviewed[id]=new Date().toISOString();store.save();render();toast(store.data.reviewed[id]?'Topic marked reviewed.':'Review mark removed.');}
   if(action==='mode'){builder.mode=button.dataset.mode;builder.count=6;render();}
-  if(action==='start')begin(makeSet(questions,{...builder,attempts:store.data.attempts}),builder.mode);
-  if(action==='resume'){runVisible=true;render();main.focus();}
-  if(action==='leave'){runVisible=false;render();main.focus();window.scrollTo({top:0});}
+  if(action==='start')requestSet({...builder});
+  if(action==='quick-start')requestSet({mode:'mixed',count:6});
+  if(action==='replace-session'&&pendingSet){const selected=pendingSet;begin(selected.ids,selected.mode,selected.replaceRoute);}
+  if(action==='leave')location.hash='#/practice';
   if(action==='hint'){const s=store.data.session,id=s.ids[s.index];s.hints[id]=!s.hints[id];s.hintEverUsed??={};s.hintEverUsed[id]=true;store.save();render();}
   if(action==='next'){const s=store.data.session;if(!s.answers[s.ids[s.index]])return;if(s.index===s.ids.length-1)s.finished=true;else s.index++;store.save();formError='';render();main.focus();window.scrollTo({top:0});}
   if(action==='retry-session'){const s=store.data.session;begin(s.ids.filter(id=>!s.answers[id]?.correct),'retry');}
