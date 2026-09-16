@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#133b52">
+  <meta name="description" content="Review fluid mechanics, explore six interactive labs, and practise across CE2134 topics.">
+  <title>CE2134 Learning Hub</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <aside class="sidebar">
+    <a class="brand" href="#/" aria-label="CE2134 Learning Hub home">
+      <svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="12" fill="#133b52"/><path d="M8 14c7-7 13 7 22 0M8 20c7-7 13 7 22 0M8 26c7-7 13 7 22 0" fill="none" stroke="#a3e6d9" stroke-width="2"/></svg>
+      <span>CE2134<small>LEARNING HUB</small></span>
+    </a>
+    <div class="sidebar-label">YOUR WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <a href="#/" data-nav="home"><span aria-hidden="true">◫</span> Overview</a>
+      <a href="#/topics" data-nav="topics"><span aria-hidden="true">▤</span> Topic library</a>
+      <a href="#/practice" data-nav="practice"><span aria-hidden="true">✎</span> Practice studio</a>
+      <a href="#/progress" data-nav="progress"><span aria-hidden="true">▥</span> My progress</a>
+    </nav>
+    <div class="sidebar-note"><span class="small-wave" aria-hidden="true">∿</span><strong>A little practice, often.</strong><p>Explore a concept. Test your reasoning. Connect it to the next.</p></div>
+    <div class="sidebar-footer">Prof. Gary’s fluid mechanics course<span>Progress stays in this browser.</span></div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar"><span>FLUID MECHANICS <i>/</i> <strong id="pageLabel">Overview</strong></span><a class="topbar-link" href="#/practice">Make time for practice <span aria-hidden="true">↗</span></a></header>
+    <main id="main" tabindex="-1"></main>
+    <footer class="page-footer"><span>CE2134 Learning Hub</span><span>Review · Explore · Practise</span></footer>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
