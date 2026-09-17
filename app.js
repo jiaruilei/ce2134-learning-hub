@@ -2,7 +2,7 @@ import {topics} from './content/topics.js';
 import {questions} from './content/questions.js';
 import {gradeQuestion,makeSet} from './lib/practice.js';
 import {createStore} from './lib/storage.js';
-import {renderEquations} from './lib/math.js';
+import {renderEquations,renderMathText as rich} from './lib/math.js';
 import {hasUnfinishedSession,normalizeSessions,topicProgress} from './lib/practice-flow.js';
 
 const main=document.querySelector('main');
@@ -48,11 +48,11 @@ function topicPage(t){
   const done=!!store.data.reviewed[t.id];
   const next=topicById(t.connection.nextId);
   return `<a class="back-link" href="#/">← Topics</a><header class="topic-header"><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><nav class="topic-actions" aria-label="Topic actions"><a class="button secondary current" href="#/topic/${t.id}" aria-current="page">Review</a>${launch(t)}<a class="button primary" href="#/practice?topic=${t.id}">${practiceLabel(t.id)}</a></nav></header><div class="topic-layout"><div class="topic-body">
-  <details class="review-section review-details"><summary><h2>Learning objectives</h2></summary><ul class="objective-list">${t.objectives.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>
-  <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${esc(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${esc(q.formula)}</div><p>${esc(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section></section>
-  <details class="review-section review-details"><summary><h2>Common misconceptions</h2></summary><div class="misconceptions">${t.misconceptions.map(m=>`<article><h3>${esc(m.claim)}</h3><p>${esc(m.correction)}</p></article>`).join('')}</div></details>
-  <details class="review-section review-details"><summary><h2>Guided activity</h2></summary><h3>${esc(t.guidedActivity.title)}</h3><ol class="steps">${t.guidedActivity.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="reflection"><strong>Pause and explain</strong><p>${esc(t.guidedActivity.reflection)}</p></div></details>
-  <details class="connection review-details"><summary><h2>${esc(t.connection.title)}</h2></summary><p>${esc(t.connection.text)}</p>${next?`<a class="quiet-link" href="#/topic/${next.id}">${esc(next.title)} →</a>`:'<a class="quiet-link" href="#/">All topics →</a>'}</details></div>
+  <details class="review-section review-details"><summary><h2>Learning objectives</h2></summary><ul class="objective-list">${t.objectives.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></details>
+  <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${rich(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${rich(q.formula)}</div><p>${rich(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></section></section>
+  <details class="review-section review-details"><summary><h2>Common misconceptions</h2></summary><div class="misconceptions">${t.misconceptions.map(m=>`<article><h3>${rich(m.claim)}</h3><p>${rich(m.correction)}</p></article>`).join('')}</div></details>
+  <details class="review-section review-details"><summary><h2>Guided activity</h2></summary><h3>${rich(t.guidedActivity.title)}</h3><ol class="steps">${t.guidedActivity.steps.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><div class="reflection"><strong>Pause and explain</strong><p>${rich(t.guidedActivity.reflection)}</p></div></details>
+  <details class="connection review-details"><summary><h2>${rich(t.connection.title)}</h2></summary><p>${rich(t.connection.text)}</p>${next?`<a class="quiet-link" href="#/topic/${next.id}">${esc(next.title)} →</a>`:'<a class="quiet-link" href="#/">All topics →</a>'}</details></div>
   <aside class="topic-side"><div class="side-card"><button class="button ${done?'secondary':'primary'} full" data-action="review" data-topic="${t.id}" aria-pressed="${done}">${done?'✓ Reviewed':'Mark as reviewed'}</button>${t.prerequisites.length?`<hr><h2>Prerequisites</h2>${t.prerequisites.map(id=>`<a class="side-link" href="#/topic/${id}">${esc(topicName(id))} →</a>`).join('')}`:''}</div></aside></div>`;
 }
 

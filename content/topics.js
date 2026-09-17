@@ -1,3 +1,5 @@
+import { mathText as mt, inlineMath as im } from '../lib/math.js';
+
 export const topics = [
   {
     id: 'pressure',
@@ -20,7 +22,7 @@ export const topics = [
         label: 'A single fluid',
         formula: 'p = p_surface + ρgh',
         tex: String.raw`p = p_{\mathrm{surface}} + \rho g h`,
-        note: 'h is vertical depth below the reference surface. For a surface open to the atmosphere, gauge pressure is ρgh. Use g = 9.80 m/s².'
+        note: mt`${im('h')} is vertical depth below the reference surface. For a surface open to the atmosphere, gauge pressure is ${im(String.raw`\rho g h`, 'ρgh')}. Use ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`
       },
       {
         label: 'Pressure reference',
@@ -32,7 +34,7 @@ export const topics = [
         label: 'Layered fluids',
         formula: 'p_bottom = p_top + ρ₁gh₁ + ρ₂gh₂',
         tex: String.raw`p_{\mathrm{bottom}} = p_{\mathrm{top}} + \rho_1 g h_1 + \rho_2 g h_2`,
-        note: 'Add ρg times the vertical distance travelled downward in each layer; subtract it when travelling upward.'
+        note: mt`Add ${im(String.raw`\rho g`, 'ρg')} times the vertical distance travelled downward in each layer; subtract it when travelling upward.`
       }
     ],
     assumptions: [
@@ -47,7 +49,7 @@ export const topics = [
       },
       {
         claim: 'Zero gauge pressure means there is no pressure.',
-        correction: 'It means the pressure equals the atmospheric reference. The absolute pressure is still p_atmospheric.'
+        correction: mt`It means the pressure equals the atmospheric reference. The absolute pressure is still ${im(String.raw`p_{\mathrm{atmospheric}}`, 'p_atmospheric')}.`
       },
       {
         claim: 'Two points at the same height always have equal pressure.',
@@ -58,7 +60,7 @@ export const topics = [
       title: 'Predict the change before changing the depth',
       steps: [
         'Open the platform and choose a single-fluid case. Note the density and pressure reference.',
-        'Compare two depths. Predict the pressure increase with ρgΔh, then compare with the displayed values.',
+        mt`Compare two depths. Predict the pressure increase with ${im(String.raw`\rho g\Delta h`, 'ρgΔh')}, then compare with the displayed values.`,
         'Compare gauge and absolute readings at the same point. Identify the offset between them.',
         'Explore a two-fluid case. Work downward through each layer and add its pressure contribution.'
       ],
@@ -91,23 +93,23 @@ export const topics = [
         label: 'Plane-surface resultant',
         formula: 'F = ρgh_cA',
         tex: String.raw`F = \rho g h_{\mathrm{c}} A`,
-        note: 'A is the actual wetted plane area and h_c is its centroid’s vertical depth. The resultant acts normal to the surface.'
+        note: mt`${im('A')} is the actual wetted plane area and ${im(String.raw`h_{\mathrm{c}}`, 'h_c')} is its centroid’s vertical depth. The resultant acts normal to the surface.`
       },
       {
         label: 'Centre of pressure',
         formula: 'h_cp = h_c + I_G sin²θ / (A h_c)',
         tex: String.raw`h_{\mathrm{cp}} = h_{\mathrm{c}} + \frac{I_{\mathrm{G}}\sin^2\theta}{A h_{\mathrm{c}}}`,
-        note: 'θ is the plane’s angle to the horizontal. I_G is the second moment of area about its centroidal axis parallel to the free surface. This form uses gauge pressure zero at that free surface.'
+        note: mt`${im(String.raw`\theta`, 'θ')} is the plane’s angle to the horizontal. ${im(String.raw`I_{\mathrm{G}}`, 'I_G')} is the second moment of area about its centroidal axis parallel to the free surface. This form uses gauge pressure zero at that free surface.`
       },
       {
         label: 'Curved-surface components',
         formula: '|F_H| = ρg h_projection A_projection;  |F_V| = ρg V_imaginary',
         tex: String.raw`\begin{aligned}|F_{\mathrm{H}}| &= \rho g h_{\mathrm{projection}} A_{\mathrm{projection}} \\ |F_{\mathrm{V}}| &= \rho g V_{\mathrm{imaginary}}\end{aligned}`,
-        note: 'Use the vertical projection for F_H. V_imaginary is the fluid volume between the curved surface and the free-surface plane. Determine each direction from the wetted side and a force balance; combine with F = √(F_H² + F_V²).'
+        note: mt`Use the vertical projection for ${im(String.raw`F_{\mathrm{H}}`, 'F_H')}. ${im(String.raw`V_{\mathrm{imaginary}}`, 'V_imaginary')} is the fluid volume between the curved surface and the free-surface plane. Determine each direction from the wetted side and a force balance; combine with ${im(String.raw`F = \sqrt{F_{\mathrm{H}}^2 + F_{\mathrm{V}}^2}`, 'F = √(F_H² + F_V²)')}.`
       }
     ],
     assumptions: [
-      'The fluid is static and has uniform density; use g = 9.80 m/s².',
+      mt`The fluid is static and has uniform density; use ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`,
       'The formulas use a free surface open to the atmosphere and atmospheric pressure on the opposite side, so atmospheric contributions cancel.',
       'The plane formula applies to a submerged plane area. A curved surface needs a component balance because the local pressure forces have different directions.'
     ],
@@ -117,8 +119,8 @@ export const topics = [
         correction: 'Pressure grows with depth. On a nonhorizontal submerged plane, the centre of pressure lies below the centroid. They coincide when the pressure is uniform.'
       },
       {
-        claim: 'The depth in ρgh_cA is the distance measured along the plate.',
-        correction: 'h_c is vertical depth below the free surface. Convert an along-plate distance using the plate inclination.'
+        claim: mt`The depth in ${im(String.raw`\rho g h_{\mathrm{c}} A`, 'ρgh_cA')} is the distance measured along the plate.`,
+        correction: mt`${im(String.raw`h_{\mathrm{c}}`, 'h_c')} is vertical depth below the free surface. Convert an along-plate distance using the plate inclination.`
       },
       {
         claim: 'The vertical force on every curved surface points downward.',
@@ -162,7 +164,7 @@ export const topics = [
         label: 'Streamline: freeze the time',
         formula: 'dy/dx = v(x, y, t₀) / u(x, y, t₀)',
         tex: String.raw`\frac{\mathrm{d}y}{\mathrm{d}x} = \frac{v(x,y,t_0)}{u(x,y,t_0)}`,
-        note: 'The tangent follows the instantaneous velocity field at one fixed time t₀. This slope form assumes u is nonzero.'
+        note: mt`The tangent follows the instantaneous velocity field at one fixed time ${im('t_0', 't₀')}. This slope form assumes ${im('u')} is nonzero.`
       },
       {
         label: 'Pathline: follow one particle',
@@ -172,7 +174,7 @@ export const topics = [
       },
       {
         label: 'Streakline: keep the release point fixed',
-        formula: 'Streakline at t = current positions of particles released from one fixed point',
+        formula: mt`Streakline at ${im('t')} = current positions of particles released from one fixed point`,
         note: 'The particles have different release times. In a steady flow, streamline, pathline and streakline through the same location coincide geometrically.'
       }
     ],
@@ -238,13 +240,13 @@ export const topics = [
         label: 'Steady, one inlet and one outlet',
         formula: 'ρ₁V₁A₁ = ρ₂V₂A₂;  A = πD²/4',
         tex: String.raw`\begin{aligned}\rho_1 V_1 A_1 &= \rho_2 V_2 A_2 \\ A &= \frac{\pi D^2}{4}\end{aligned}`,
-        note: 'With uniform section values, V₂ = (ρ₁/ρ₂)(D₁/D₂)²V₁. The wall contributes no through-flow.'
+        note: mt`With uniform section values, ${im(String.raw`V_2 = \frac{\rho_1}{\rho_2}\left(\frac{D_1}{D_2}\right)^2 V_1`, 'V₂ = (ρ₁/ρ₂)(D₁/D₂)²V₁')}. The wall contributes no through-flow.`
       },
       {
         label: 'Volume flow and mass flow',
         formula: 'Q = VA;  ṁ = ρQ',
         tex: String.raw`Q = VA, \qquad \dot{m} = \rho Q`,
-        note: 'Q is measured in m³/s; ṁ is measured in kg/s. Equal densities give Q₁ = Q₂ here; unequal densities can give Q₁ ≠ Q₂ while conserving mass.'
+        note: mt`${im('Q')} is measured in ${im(String.raw`\mathrm{m^3/s}`, 'm³/s')}; ${im(String.raw`\dot{m}`, 'ṁ')} is measured in ${im(String.raw`\mathrm{kg/s}`, 'kg/s')}. Equal densities give ${im('Q_1 = Q_2', 'Q₁ = Q₂')} here; unequal densities can give ${im(String.raw`Q_1 \ne Q_2`, 'Q₁ ≠ Q₂')} while conserving mass.`
       }
     ],
     assumptions: [
@@ -258,8 +260,8 @@ export const topics = [
         correction: 'With steady flow and no leakage or accumulation, inlet and outlet mass flows match. Velocity adjusts to the area and density.'
       },
       {
-        claim: 'Conservation of mass always means Q₁ = Q₂.',
-        correction: 'It means ρ₁Q₁ = ρ₂Q₂ for this steady model. Volume flows are equal only when the two densities are equal.'
+        claim: mt`Conservation of mass always means ${im('Q_1 = Q_2', 'Q₁ = Q₂')}.`,
+        correction: mt`It means ${im(String.raw`\rho_1 Q_1 = \rho_2 Q_2`, 'ρ₁Q₁ = ρ₂Q₂')} for this steady model. Volume flows are equal only when the two densities are equal.`
       },
       {
         claim: 'Pausing the animation makes the physical flow zero.',
@@ -270,9 +272,9 @@ export const topics = [
       title: 'Make a prediction using a ratio',
       steps: [
         'Set the two densities equal and keep a nonzero inlet velocity. Highlight the inlet, outlet and pipe wall in turn.',
-        'Keep D₁ and V₁ fixed, then halve D₂ within the allowed range. Predict V₂ before reading the result.',
-        'Restore the original diameters. Hold ρ₁ fixed and change ρ₂. Compare Q₁, Q₂ and the mass flow.',
-        'Pause the animation and inspect the readings. Then set V₁ to zero and compare the physical quantities.'
+        mt`Keep ${im('D_1', 'D₁')} and ${im('V_1', 'V₁')} fixed, then halve ${im('D_2', 'D₂')} within the allowed range. Predict ${im('V_2', 'V₂')} before reading the result.`,
+        mt`Restore the original diameters. Hold ${im(String.raw`\rho_1`, 'ρ₁')} fixed and change ${im(String.raw`\rho_2`, 'ρ₂')}. Compare ${im('Q_1', 'Q₁')}, ${im('Q_2', 'Q₂')} and the mass flow.`,
+        mt`Pause the animation and inspect the readings. Then set ${im('V_1', 'V₁')} to zero and compare the physical quantities.`
       ],
       reflection: 'Why does halving a circular pipe’s diameter require a fourfold velocity increase at constant density and volume flow?'
     },
@@ -303,19 +305,19 @@ export const topics = [
         label: 'Ideal mechanical-energy balance',
         formula: 'p₁/(ρg) + v₁²/(2g) + z₁ = p₂/(ρg) + v₂²/(2g) + z₂',
         tex: String.raw`\begin{aligned}&\frac{p_1}{\rho g} + \frac{v_1^2}{2g} + z_1 \\ &\qquad = \frac{p_2}{\rho g} + \frac{v_2^2}{2g} + z_2\end{aligned}`,
-        note: 'Pressure head, velocity head and elevation head all have units of metres. Use one pressure reference consistently and g = 9.80 m/s².'
+        note: mt`Pressure head, velocity head and elevation head all have units of metres. Use one pressure reference consistently and ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`
       },
       {
         label: 'Hydraulic grade line',
         formula: 'HGL = z + p/(ρg)',
         tex: String.raw`\mathrm{HGL} = z + \frac{p}{\rho g}`,
-        note: 'The vertical difference HGL − z is pressure head. With gauge pressure, HGL below the pipe centreline indicates negative gauge pressure.'
+        note: mt`The vertical difference ${im(String.raw`\mathrm{HGL} - z`, 'HGL − z')} is pressure head. With gauge pressure, HGL below the pipe centreline indicates negative gauge pressure.`
       },
       {
         label: 'Energy grade line',
         formula: 'EGL = HGL + v²/(2g)',
         tex: String.raw`\mathrm{EGL} = \mathrm{HGL} + \frac{v^2}{2g}`,
-        note: 'The gap EGL − HGL is velocity head. For this model without pumps, turbines or losses, EGL is constant along the flow.'
+        note: mt`The gap ${im(String.raw`\mathrm{EGL} - \mathrm{HGL}`, 'EGL − HGL')} is velocity head. For this model without pumps, turbines or losses, EGL is constant along the flow.`
       }
     ],
     assumptions: [
@@ -334,15 +336,15 @@ export const topics = [
       },
       {
         claim: 'The HGL height is pressure by itself.',
-        correction: 'HGL contains elevation head as well as pressure head. Subtract the local pipe elevation to read p/(ρg).'
+        correction: mt`HGL contains elevation head as well as pressure head. Subtract the local pipe elevation to read ${im(String.raw`\frac{p}{\rho g}`, 'p/(ρg)')}.`
       }
     ],
     guidedActivity: {
       title: 'Change one energy term at a time',
       steps: [
-        'Use Explore Mode. Set z₂ relative to z₁ to zero, choose a nonzero upstream speed and show both HGL and EGL.',
-        'Hold the upstream settings fixed and reduce D₂. Predict the downstream speed, pressure and EGL–HGL gap, then inspect the display.',
-        'Set equal diameters and increase z₂. Compare the pressure head with the HGL and EGL heights.',
+        mt`Use Explore Mode. Set ${im('z_2', 'z₂')} relative to ${im('z_1', 'z₁')} to zero, choose a nonzero upstream speed and show both HGL and EGL.`,
+        mt`Hold the upstream settings fixed and reduce ${im('D_2', 'D₂')}. Predict the downstream speed, pressure and ${im(String.raw`\mathrm{EGL} - \mathrm{HGL}`, 'EGL–HGL')} gap, then inspect the display.`,
+        mt`Set equal diameters and increase ${im('z_2', 'z₂')}. Compare the pressure head with the HGL and EGL heights.`,
         'Explain the two experiments in words before using the platform’s quiz or coach to practise further.'
       ],
       reflection: 'With equal diameters and a higher outlet, how can downstream pressure decrease while the HGL remains level?'
@@ -380,18 +382,18 @@ export const topics = [
         label: 'Force on the vane in this model',
         formula: 'F_x = ρAV²(1 − cosθ);  F_y = ρAV² sinθ',
         tex: String.raw`\begin{aligned}F_x &= \rho A V^2(1-\cos\theta) \\ F_y &= \rho A V^2\sin\theta\end{aligned}`,
-        note: 'The incoming jet points right. θ is the downward deflection from that direction, from 0° to 180°. Positive force on the vane is rightward in x and upward in y.'
+        note: mt`The incoming jet points right. ${im(String.raw`\theta`, 'θ')} is the downward deflection from that direction, from ${im(String.raw`0^\circ`, '0°')} to ${im(String.raw`180^\circ`, '180°')}. Positive force on the vane is rightward in ${im('x')} and upward in ${im('y')}.`
       },
       {
         label: 'Jet flow and resultant',
         formula: 'A = πD²/4;  ṁ = ρAV;  F = √(F_x² + F_y²)',
         tex: String.raw`\begin{aligned}A &= \frac{\pi D^2}{4}, \qquad \dot{m} = \rho AV \\ F &= \sqrt{F_x^2 + F_y^2}\end{aligned}`,
-        note: 'Water density is 1000 kg/m³ in the app. At a fixed diameter and deflection angle, each force component scales with V².'
+        note: mt`Water density is ${im(String.raw`1000\,\mathrm{kg/m^3}`, '1000 kg/m³')} in the app. At a fixed diameter and deflection angle, each force component scales with ${im('V^2', 'V²')}.`
       }
     ],
     assumptions: [
       'The vane is stationary; a steady water jet follows the prescribed deflection.',
-      'The ideal model uses the same speed V at inlet and outlet and neglects losses.',
+      mt`The ideal model uses the same speed ${im('V')} at inlet and outlet and neglects losses.`,
       'Both free-jet sections are at atmospheric pressure. The component formulas neglect gravity over the turning region and describe force on the vane.'
     ],
     misconceptions: [
@@ -411,10 +413,10 @@ export const topics = [
     guidedActivity: {
       title: 'Turn the jet; keep track of the reaction',
       steps: [
-        'Keep jet diameter and speed fixed. Compare deflections of 0°, 90° and 180°.',
+        mt`Keep jet diameter and speed fixed. Compare deflections of ${im(String.raw`0^\circ`, '0°')}, ${im(String.raw`90^\circ`, '90°')} and ${im(String.raw`180^\circ`, '180°')}.`,
         'At each angle, sketch the inlet and outlet velocity arrows and predict the horizontal and vertical forces on the vane.',
-        'At 90°, compare the two force components. At 180°, explain why the vertical component returns to zero.',
-        'Keep a nonzero deflection angle and diameter fixed, then compare two allowed speeds with a 2:1 ratio. Check the predicted 4:1 force ratio.'
+        mt`At ${im(String.raw`90^\circ`, '90°')}, compare the two force components. At ${im(String.raw`180^\circ`, '180°')}, explain why the vertical component returns to zero.`,
+        mt`Keep a nonzero deflection angle and diameter fixed, then compare two allowed speeds with a ${im(String.raw`2\mathbin{:}1`, '2:1')} ratio. Check the predicted ${im(String.raw`4\mathbin{:}1`, '4:1')} force ratio.`
       ],
       reflection: 'Why can a jet transfer momentum to a stationary vane without the vane doing mechanical work through motion?'
     },

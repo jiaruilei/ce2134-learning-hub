@@ -77,6 +77,8 @@ Edit the source files, not generated copies inside `dist/`. Numerical questions 
 
 Key equations in `content/topics.js` have a `tex` field written with `String.raw` for MathJax and a plain-text `formula` fallback. Keep both mathematically equivalent. The verbal streakline definition remains prose. Formulas remain readable if MathJax cannot load; the renderer also ignores detached elements when students navigate quickly between topics. Setup follows the [MathJax self-hosting documentation](https://docs.mathjax.org/en/latest/web/hosting.html).
 
+Topic prose uses the `mathText` tagged template and `inlineMath(tex, fallback)` for individual symbols and inline expressions. Plain strings remain plain text; only explicitly authored math is typeset. Use `String.raw` for TeX containing backslashes and provide a readable fallback for accessibility and loading failures. Inline notation uses the surrounding text size and baseline, while key equations retain display layout.
+
 After content changes, run `npm test` and `npm run build`, then inspect the affected pages in the local preview. Automated checks complement instructor review; they cannot establish that the material matches the intended lecture or assessment standard.
 
 ### Instructor review before release
