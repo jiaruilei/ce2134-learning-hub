@@ -27,7 +27,7 @@ These are external lab launches, not embedded or copied applications. The hub do
 - Six review modules with suggested foundations and connections between concepts.
 - **Six questions per chapter**, with retries of that chapter's missed questions. The source question bank retains all 42 questions, including six connecting questions reserved for future use; mixed-topic revision is not exposed in the interface.
 - Hints, worked solutions, answer tolerances and a session summary.
-- A personal review checklist, an unfinished-session resume option, and a **My record** footer menu with Download my record and Clear progress. Clearing requires confirmation and returns to Topics.
+- A personal review checklist, an unfinished-session resume option, and a **Clear progress** footer button. Clearing requires confirmation and returns to Topics.
 
 Each chapter uses its six-question pool; retry sets contain the questions missed in that chapter's last set. Existing attempts, review marks, and saved records are retained when the navigation changes. The bank is finite and does not generate new questions with AI.
 
@@ -56,9 +56,8 @@ The hub does not ask for a name, student number, email address or login. Its rev
 
 - Progress is local to the browser and website origin. It does not follow a student to another browser or device; local preview and a deployed site have separate records.
 - Hub practice is not sent to an instructor dashboard or a reporting service and is not synchronised with the external labs.
-- Clearing browser site data removes the saved record. The hub also provides a clear-record action with confirmation.
+- Clearing browser site data removes the saved record. The footer's **Clear progress** button also removes it after confirmation.
 - If browser storage is unavailable, practice continues in memory and the page displays a notice that progress may not survive closing the page.
-- **Download my record** creates a JSON file with checked answers, review marks and saved practice sessions for personal reference. It does not submit that file to anyone.
 
 “Marked reviewed” is a student's own checklist entry. Practice accuracy describes recorded hub attempts; it is not evidence of lab completion or a course grade.
 

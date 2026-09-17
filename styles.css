@@ -47,14 +47,8 @@ main { padding: 24px; min-height: 440px; outline: none; }
 .page-footer { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 20px; padding: 12px 24px; border-top: 1px solid var(--line); background: white; color: var(--muted); font-size: 14px; }
 .page-footer > span, .page-footer > a { display: inline-flex; align-items: center; min-height: 44px; }
 .page-footer a { color: var(--muted); }
-.record-menu { margin-left: auto; }
-.record-menu > summary { min-height: 44px; padding: 12px 4px; cursor: pointer; font-weight: 650; }
-.record-menu > summary:hover { color: var(--blue-dark); }
-.record-menu-panel { display: flex; flex-direction: column; width: 225px; max-width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-.record-menu-panel p { margin: 2px 8px 6px; font-size: 13px; }
-.record-menu-panel button { min-height: 44px; padding: 10px 8px; border: 0; border-radius: 6px; background: transparent; color: var(--accent); font-size: 14px; font-weight: 650; line-height: 1.4; text-align: left; }
-.record-menu-panel button:hover { background: #e5edf8; }
-.record-menu-panel button.danger { color: var(--bad); }
+.clear-progress-button { margin-left: auto; min-height: 44px; padding: 10px 4px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 650; }
+.clear-progress-button:hover { color: var(--bad); text-decoration: underline; text-underline-offset: 3px; }
 .record-dialog { width: calc(100% - 32px); max-width: 440px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: white; color: var(--ink); box-shadow: 0 16px 48px #14203333; }
 .record-dialog::backdrop { background: rgba(20,32,51,.35); }
 .record-dialog h2 { margin-bottom: 12px; }
@@ -245,9 +239,7 @@ main { padding: 24px; min-height: 440px; outline: none; }
   .coastal-masthead { min-height: 140px; padding: 18px 14px; }
   .coastal-photos { grid-template-columns: 1fr 1fr 1fr; }
   .page-footer { gap: 4px 16px; padding: 12px 14px; }
-  .record-menu { width: 100%; margin-left: 0; }
-  .record-menu > summary { width: fit-content; }
-  .record-menu-panel { width: 100%; }
+  .clear-progress-button { margin-left: 0; }
   main { padding: 20px 14px; }
   .page-heading { margin-bottom: 18px; }
   .button { font-size: 16px; padding: 10px 12px; }

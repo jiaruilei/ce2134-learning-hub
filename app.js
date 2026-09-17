@@ -111,7 +111,6 @@ function startChapter(topic,replaceRoute=false){
 }
 function onRoute(){
   runVisible=false;activeTopic=null;formError='';
-  document.querySelector('.record-menu').open=false;
   const [path,search='']=location.hash.slice(1).split('?');
   const params=new URLSearchParams(search);
   if(path==='/topics'||path==='/progress')history.replaceState(null,'','#/');
@@ -139,10 +138,6 @@ main.addEventListener('click',event=>{
 document.querySelector('.page-footer').addEventListener('click',event=>{
   const button=event.target.closest('[data-action]');if(!button)return;
   const action=button.dataset.action;
-  if(action==='export-progress'){
-    const data={...store.data,exportedAt:new Date().toISOString(),note:'Hub practice in this browser only; no external platform activity.'};
-    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`ce2134-progress-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  }
   if(action==='clear-progress'){
     const dialog=document.getElementById('clearRecordDialog');
     dialog.returnValue='cancel';dialog.showModal();

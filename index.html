@@ -33,19 +33,12 @@
     <footer class="page-footer">
       <span>CE2134 · Fluid mechanics</span>
       <a href="https://www.garylei.com/gallery" target="_blank" rel="noopener noreferrer" title="Photo credits: Gary Lei, Zichen Xu, and Yushu Xie. Includes a submerged vegetation research setup.">Photos · LEI gallery ↗</a>
-      <details class="record-menu">
-        <summary>My record</summary>
-        <div class="record-menu-panel">
-          <p>Saved in this browser.</p>
-          <button type="button" data-action="export-progress">Download my record</button>
-          <button type="button" class="danger" data-action="clear-progress">Clear progress</button>
-        </div>
-      </details>
+      <button type="button" class="clear-progress-button" data-action="clear-progress">Clear progress</button>
     </footer>
   </div>
   </div>
   <dialog id="clearRecordDialog" class="record-dialog" aria-labelledby="clearRecordTitle" aria-describedby="clearRecordDescription">
-    <h2 id="clearRecordTitle">Clear this browser’s record?</h2>
+    <h2 id="clearRecordTitle">Clear this browser’s progress?</h2>
     <p id="clearRecordDescription">This removes your checked answers, review marks, and saved practice sessions.</p>
     <form method="dialog" class="button-row">
       <button type="submit" class="button secondary" value="cancel" autofocus>Cancel</button>
