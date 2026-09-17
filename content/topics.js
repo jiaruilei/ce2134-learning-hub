@@ -34,12 +34,12 @@ export const topics = [
         label: 'Layered fluids',
         formula: 'p_bottom = p_top + ρ₁gh₁ + ρ₂gh₂',
         tex: String.raw`p_{\mathrm{bottom}} = p_{\mathrm{top}} + \rho_1 g h_1 + \rho_2 g h_2`,
-        note: mt`Add ${im(String.raw`\rho g`, 'ρg')} times the vertical distance travelled downward in each layer; subtract it when travelling upward.`
+        note: mt`Add ${im(String.raw`\rho g`, 'ρg')} times the vertical distance travelled downward in each layer. Subtract it when travelling upward.`
       }
     ],
     assumptions: [
       'The fluid is at rest and each layer has uniform density.',
-      'Gravity is uniform; depth is measured vertically.',
+      'Gravity is uniform. Depth is measured vertically.',
       'Pressure is continuous across the fluid interface when surface-tension effects are neglected.'
     ],
     misconceptions: [
@@ -103,13 +103,13 @@ export const topics = [
       },
       {
         label: 'Curved-surface components',
-        formula: '|F_H| = ρg h_projection A_projection;  |F_V| = ρg V_imaginary',
+        formula: '|F_H| = ρg h_projection A_projection,  |F_V| = ρg V_imaginary',
         tex: String.raw`\begin{aligned}|F_{\mathrm{H}}| &= \rho g h_{\mathrm{projection}} A_{\mathrm{projection}} \\ |F_{\mathrm{V}}| &= \rho g V_{\mathrm{imaginary}}\end{aligned}`,
-        note: mt`Use the vertical projection for ${im(String.raw`F_{\mathrm{H}}`, 'F_H')}. ${im(String.raw`V_{\mathrm{imaginary}}`, 'V_imaginary')} is the fluid volume between the curved surface and the free-surface plane. Determine each direction from the wetted side and a force balance; combine with ${im(String.raw`F = \sqrt{F_{\mathrm{H}}^2 + F_{\mathrm{V}}^2}`, 'F = √(F_H² + F_V²)')}.`
+        note: mt`Use the vertical projection for ${im(String.raw`F_{\mathrm{H}}`, 'F_H')}. ${im(String.raw`V_{\mathrm{imaginary}}`, 'V_imaginary')} is the fluid volume between the curved surface and the free-surface plane. Determine each direction from the wetted side and a force balance. Combine the components using ${im(String.raw`F = \sqrt{F_{\mathrm{H}}^2 + F_{\mathrm{V}}^2}`, 'F = √(F_H² + F_V²)')}.`
       }
     ],
     assumptions: [
-      mt`The fluid is static and has uniform density; use ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`,
+      mt`The fluid is static and has uniform density. Use ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`,
       'The formulas use a free surface open to the atmosphere and atmospheric pressure on the opposite side, so atmospheric contributions cancel.',
       'The plane formula applies to a submerged plane area. A curved surface needs a component balance because the local pressure forces have different directions.'
     ],
@@ -168,7 +168,7 @@ export const topics = [
       },
       {
         label: 'Pathline: follow one particle',
-        formula: 'dx/dt = u(x, y, t);  dy/dt = v(x, y, t)',
+        formula: 'dx/dt = u(x, y, t),  dy/dt = v(x, y, t)',
         tex: String.raw`\begin{aligned}\frac{\mathrm{d}x}{\mathrm{d}t} &= u(x,y,t) \\ \frac{\mathrm{d}y}{\mathrm{d}t} &= v(x,y,t)\end{aligned}`,
         note: 'The same particle moves through the field as time advances. Its previous positions form the pathline.'
       },
@@ -180,13 +180,13 @@ export const topics = [
     ],
     assumptions: [
       'The platform shows ideal two-dimensional velocity fields and passive tracers.',
-      'The displayed line follows the selected construction; it is not a solid boundary.',
+      'The displayed line follows the selected construction. It is not a solid boundary.',
       'Compare lines from the same seed or source when investigating whether they coincide.'
     ],
     misconceptions: [
       {
         claim: 'Every curved trace is a particle trajectory.',
-        correction: 'Only a pathline follows one particle through time. A streamline is an instantaneous tangent curve; a streakline contains many particles.'
+        correction: 'Only a pathline follows one particle through time. A streamline is an instantaneous tangent curve. A streakline contains many particles.'
       },
       {
         claim: 'A particle must remain on the streamline drawn at an earlier time.',
@@ -238,21 +238,21 @@ export const topics = [
       },
       {
         label: 'Steady, one inlet and one outlet',
-        formula: 'ρ₁V₁A₁ = ρ₂V₂A₂;  A = πD²/4',
+        formula: 'ρ₁V₁A₁ = ρ₂V₂A₂,  A = πD²/4',
         tex: String.raw`\begin{aligned}\rho_1 V_1 A_1 &= \rho_2 V_2 A_2 \\ A &= \frac{\pi D^2}{4}\end{aligned}`,
         note: mt`With uniform section values, ${im(String.raw`V_2 = \frac{\rho_1}{\rho_2}\left(\frac{D_1}{D_2}\right)^2 V_1`, 'V₂ = (ρ₁/ρ₂)(D₁/D₂)²V₁')}. The wall contributes no through-flow.`
       },
       {
         label: 'Volume flow and mass flow',
-        formula: 'Q = VA;  ṁ = ρQ',
+        formula: 'Q = VA,  ṁ = ρQ',
         tex: String.raw`Q = VA, \qquad \dot{m} = \rho Q`,
-        note: mt`${im('Q')} is measured in ${im(String.raw`\mathrm{m^3/s}`, 'm³/s')}; ${im(String.raw`\dot{m}`, 'ṁ')} is measured in ${im(String.raw`\mathrm{kg/s}`, 'kg/s')}. Equal densities give ${im('Q_1 = Q_2', 'Q₁ = Q₂')} here; unequal densities can give ${im(String.raw`Q_1 \ne Q_2`, 'Q₁ ≠ Q₂')} while conserving mass.`
+        note: mt`${im('Q')} is measured in ${im(String.raw`\mathrm{m^3/s}`, 'm³/s')}. ${im(String.raw`\dot{m}`, 'ṁ')} is measured in ${im(String.raw`\mathrm{kg/s}`, 'kg/s')}. Equal densities give ${im('Q_1 = Q_2', 'Q₁ = Q₂')} here. Unequal densities can give ${im(String.raw`Q_1 \ne Q_2`, 'Q₁ ≠ Q₂')} while conserving mass.`
       }
     ],
     assumptions: [
       'The model is steady, with one inlet, one outlet and no leakage through the pipe wall.',
       'Density and velocity are uniform over each section.',
-      'The smooth transition and tracer animation illustrate continuity; they do not solve the full flow field or determine the pressure.'
+      'The smooth transition and tracer animation illustrate continuity. They do not solve the full flow field or determine the pressure.'
     ],
     misconceptions: [
       {
@@ -279,7 +279,7 @@ export const topics = [
       reflection: 'Why does halving a circular pipe’s diameter require a fourfold velocity increase at constant density and volume flow?'
     },
     connection: {
-      title: 'Mass balance gives velocity; energy gives pressure',
+      title: 'From mass balance to energy',
       text: 'Once continuity links the section velocities, Bernoulli’s equation relates their pressure and elevation changes.',
       nextId: 'bernoulli'
     }
@@ -321,7 +321,7 @@ export const topics = [
       }
     ],
     assumptions: [
-      'Steady, incompressible flow with uniform section velocities; the kinetic-energy correction factor is taken as one.',
+      'Assume steady, incompressible flow with uniform section velocities. Take the kinetic-energy correction factor as one.',
       'Apply the ideal balance along the flow with no head loss and no pump or turbine work.',
       'Use a shared elevation datum and the same gauge or absolute pressure reference at both sections. Real cavitation requires an absolute-pressure check.'
     ],
@@ -380,19 +380,19 @@ export const topics = [
       },
       {
         label: 'Force on the vane in this model',
-        formula: 'F_x = ρAV²(1 − cosθ);  F_y = ρAV² sinθ',
+        formula: 'F_x = ρAV²(1 − cosθ),  F_y = ρAV² sinθ',
         tex: String.raw`\begin{aligned}F_x &= \rho A V^2(1-\cos\theta) \\ F_y &= \rho A V^2\sin\theta\end{aligned}`,
         note: mt`The incoming jet points right. ${im(String.raw`\theta`, 'θ')} is the downward deflection from that direction, from ${im(String.raw`0^\circ`, '0°')} to ${im(String.raw`180^\circ`, '180°')}. Positive force on the vane is rightward in ${im('x')} and upward in ${im('y')}.`
       },
       {
         label: 'Jet flow and resultant',
-        formula: 'A = πD²/4;  ṁ = ρAV;  F = √(F_x² + F_y²)',
+        formula: 'A = πD²/4,  ṁ = ρAV,  F = √(F_x² + F_y²)',
         tex: String.raw`\begin{aligned}A &= \frac{\pi D^2}{4}, \qquad \dot{m} = \rho AV \\ F &= \sqrt{F_x^2 + F_y^2}\end{aligned}`,
         note: mt`Water density is ${im(String.raw`1000\,\mathrm{kg/m^3}`, '1000 kg/m³')} in the app. At a fixed diameter and deflection angle, each force component scales with ${im('V^2', 'V²')}.`
       }
     ],
     assumptions: [
-      'The vane is stationary; a steady water jet follows the prescribed deflection.',
+      'The vane is stationary. A steady water jet follows the prescribed deflection.',
       mt`The ideal model uses the same speed ${im('V')} at inlet and outlet and neglects losses.`,
       'Both free-jet sections are at atmospheric pressure. The component formulas neglect gravity over the turning region and describe force on the vane.'
     ],
@@ -411,7 +411,7 @@ export const topics = [
       }
     ],
     guidedActivity: {
-      title: 'Turn the jet; keep track of the reaction',
+      title: 'Turn the jet and track the reaction',
       steps: [
         mt`Keep jet diameter and speed fixed. Compare deflections of ${im(String.raw`0^\circ`, '0°')}, ${im(String.raw`90^\circ`, '90°')} and ${im(String.raw`180^\circ`, '180°')}.`,
         'At each angle, sketch the inlet and outlet velocity arrows and predict the horizontal and vertical forces on the vane.',
