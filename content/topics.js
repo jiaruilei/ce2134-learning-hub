@@ -11,7 +11,6 @@ export const topics = [
     color: '#2563eb',
     symbol: 'p',
     url: 'https://hydrostatic-pressure.onrender.com/',
-    prerequisites: [],
     objectives: [
       'Relate pressure change to vertical depth in a fluid at rest.',
       'Convert between gauge and absolute pressure using the same atmospheric reference.',
@@ -22,7 +21,7 @@ export const topics = [
         label: 'A single fluid',
         formula: 'p = p_surface + ρgh',
         tex: String.raw`p = p_{\mathrm{surface}} + \rho g h`,
-        note: mt`${im('h')} is vertical depth below the reference surface. For a surface open to the atmosphere, gauge pressure is ${im(String.raw`\rho g h`, 'ρgh')}. Use ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`
+        note: mt`For a fluid at rest with uniform density, ${im('h')} is vertical depth below the reference surface. Below an open free surface, gauge pressure is ${im(String.raw`\rho g h`, 'ρgh')}. Use ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`
       },
       {
         label: 'Pressure reference',
@@ -34,13 +33,8 @@ export const topics = [
         label: 'Layered fluids',
         formula: 'p_bottom = p_top + ρ₁gh₁ + ρ₂gh₂',
         tex: String.raw`p_{\mathrm{bottom}} = p_{\mathrm{top}} + \rho_1 g h_1 + \rho_2 g h_2`,
-        note: mt`Add ${im(String.raw`\rho g`, 'ρg')} times the vertical distance travelled downward in each layer. Subtract it when travelling upward.`
+        note: mt`For layers of uniform density, add ${im(String.raw`\rho g`, 'ρg')} times the vertical distance travelled downward in each layer. Subtract it when travelling upward.`
       }
-    ],
-    assumptions: [
-      'The fluid is at rest and each layer has uniform density.',
-      'Gravity is uniform. Depth is measured vertically.',
-      'Pressure is continuous across the fluid interface when surface-tension effects are neglected.'
     ],
     misconceptions: [
       {
@@ -82,7 +76,6 @@ export const topics = [
     color: '#7c3aed',
     symbol: 'F',
     url: 'https://hydrostatic-force-surfaces.onrender.com/',
-    prerequisites: ['pressure'],
     objectives: [
       'Calculate the hydrostatic force on a submerged plane area.',
       'Distinguish the centroid from the centre of pressure.',
@@ -90,28 +83,51 @@ export const topics = [
     ],
     equations: [
       {
+        id: 'plane-resultant',
         label: 'Plane-surface resultant',
         formula: 'F = ρgh_cA',
         tex: String.raw`F = \rho g h_{\mathrm{c}} A`,
-        note: mt`${im('A')} is the actual wetted plane area and ${im(String.raw`h_{\mathrm{c}}`, 'h_c')} is its centroid’s vertical depth. The resultant acts normal to the surface.`
+        note: mt`${im('A')} is the wetted plane area and ${im(String.raw`h_{\mathrm{c}}`, 'h_c')} is its centroid’s vertical depth. The resultant acts normal to the surface. These hydrostatic formulas use uniform density and atmospheric pressure at the free surface and on the opposite side.`
       },
       {
+        id: 'plane-centre',
         label: 'Centre of pressure',
         formula: 'h_cp = h_c + I_G sin²θ / (A h_c)',
         tex: String.raw`h_{\mathrm{cp}} = h_{\mathrm{c}} + \frac{I_{\mathrm{G}}\sin^2\theta}{A h_{\mathrm{c}}}`,
         note: mt`${im(String.raw`\theta`, 'θ')} is the plane’s angle to the horizontal. ${im(String.raw`I_{\mathrm{G}}`, 'I_G')} is the second moment of area about its centroidal axis parallel to the free surface. This form uses gauge pressure zero at that free surface.`
       },
       {
-        label: 'Curved-surface components',
-        formula: '|F_H| = ρg h_projection A_projection,  |F_V| = ρg V_imaginary',
-        tex: String.raw`\begin{aligned}|F_{\mathrm{H}}| &= \rho g h_{\mathrm{projection}} A_{\mathrm{projection}} \\ |F_{\mathrm{V}}| &= \rho g V_{\mathrm{imaginary}}\end{aligned}`,
-        note: mt`Use the vertical projection for ${im(String.raw`F_{\mathrm{H}}`, 'F_H')}. ${im(String.raw`V_{\mathrm{imaginary}}`, 'V_imaginary')} is the fluid volume between the curved surface and the free-surface plane. Determine each direction from the wetted side and a force balance. Combine the components using ${im(String.raw`F = \sqrt{F_{\mathrm{H}}^2 + F_{\mathrm{V}}^2}`, 'F = √(F_H² + F_V²)')}.`
+        id: 'curved-horizontal',
+        label: 'Horizontal component',
+        formula: '|F_H| = ρg h_c,v A_v',
+        tex: String.raw`|F_{\mathrm{H}}| = \rho g h_{\mathrm{c,v}} A_{\mathrm{v}}`,
+        note: mt`${im(String.raw`A_{\mathrm{v}}`, 'A_v')} is the vertical projected area and ${im(String.raw`h_{\mathrm{c,v}}`, 'h_c,v')} is its centroid depth. The force acts through the projection’s centre of pressure.`
+      },
+      {
+        id: 'curved-vertical',
+        label: 'Vertical component',
+        formula: '|F_V| = ρg𝒱',
+        tex: String.raw`|F_{\mathrm{V}}| = \rho g\mathcal{V}`,
+        note: mt`For the constant-width curve shown, ${im(String.raw`\mathcal{V}`, '𝒱')} is the real or imaginary fluid volume above it up to the free-surface plane. Its weight gives the magnitude. The vertical force acts through this volume’s centroid.`
+      },
+      {
+        id: 'curved-resultant',
+        label: 'Resultant magnitude',
+        formula: 'F_R = √(F_H² + F_V²)',
+        tex: String.raw`F_{\mathrm{R}} = \sqrt{F_{\mathrm{H}}^2 + F_{\mathrm{V}}^2}`,
+        note: 'Combine the perpendicular components. Determine the direction from the wetted side and a force balance.'
       }
     ],
-    assumptions: [
-      mt`The fluid is static and has uniform density. Use ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`,
-      'The formulas use a free surface open to the atmosphere and atmospheric pressure on the opposite side, so atmospheric contributions cancel.',
-      'The plane formula applies to a submerged plane area. A curved surface needs a component balance because the local pressure forces have different directions.'
+    reviewSections: [
+      {
+        id: 'plane', title: 'Plane surfaces', diagram: 'forces',
+        equations: ['plane-resultant', 'plane-centre']
+      },
+      {
+        id: 'curved', title: 'Curved surfaces', diagram: 'forces-curved',
+        equations: ['curved-horizontal', 'curved-vertical', 'curved-resultant'],
+        note: 'For the gate shown, water pushes rightward and downward. Water acting from below can produce an upward vertical force.'
+      }
     ],
     misconceptions: [
       {
@@ -153,7 +169,6 @@ export const topics = [
     color: '#0891b2',
     symbol: '→',
     url: 'https://jiaruilei.github.io/Flowlines_interactive/',
-    prerequisites: [],
     objectives: [
       'Define a streamline, pathline and streakline using how each is constructed.',
       'Explain why the three line types can differ in unsteady flow.',
@@ -177,11 +192,6 @@ export const topics = [
         formula: mt`Streakline at ${im('t')} = current positions of particles released from one fixed point`,
         note: 'The particles have different release times. In a steady flow, streamline, pathline and streakline through the same location coincide geometrically.'
       }
-    ],
-    assumptions: [
-      'The platform shows ideal two-dimensional velocity fields and passive tracers.',
-      'The displayed line follows the selected construction. It is not a solid boundary.',
-      'Compare lines from the same seed or source when investigating whether they coincide.'
     ],
     misconceptions: [
       {
@@ -223,7 +233,6 @@ export const topics = [
     color: '#059669',
     symbol: 'ṁ',
     url: 'https://jiaruilei.github.io/Conservation-of-Mass/',
-    prerequisites: ['flowlines'],
     objectives: [
       'Identify the inlet, outlet and impermeable wall of a fixed control volume.',
       'Use the steady mass balance to predict the outlet velocity.',
@@ -248,11 +257,6 @@ export const topics = [
         tex: String.raw`Q = VA, \qquad \dot{m} = \rho Q`,
         note: mt`${im('Q')} is measured in ${im(String.raw`\mathrm{m^3/s}`, 'm³/s')}. ${im(String.raw`\dot{m}`, 'ṁ')} is measured in ${im(String.raw`\mathrm{kg/s}`, 'kg/s')}. Equal densities give ${im('Q_1 = Q_2', 'Q₁ = Q₂')} here. Unequal densities can give ${im(String.raw`Q_1 \ne Q_2`, 'Q₁ ≠ Q₂')} while conserving mass.`
       }
-    ],
-    assumptions: [
-      'The model is steady, with one inlet, one outlet and no leakage through the pipe wall.',
-      'Density and velocity are uniform over each section.',
-      'The smooth transition and tracer animation illustrate continuity. They do not solve the full flow field or determine the pressure.'
     ],
     misconceptions: [
       {
@@ -294,7 +298,6 @@ export const topics = [
     color: '#d97706',
     symbol: 'H',
     url: 'https://bernoulli-pipe-hgl-egl.onrender.com/',
-    prerequisites: ['pressure', 'continuity'],
     objectives: [
       'Use continuity and Bernoulli together to predict downstream pressure.',
       'Interpret the hydraulic grade line and energy grade line as head values.',
@@ -305,7 +308,7 @@ export const topics = [
         label: 'Ideal mechanical-energy balance',
         formula: 'p₁/(ρg) + v₁²/(2g) + z₁ = p₂/(ρg) + v₂²/(2g) + z₂',
         tex: String.raw`\begin{aligned}&\frac{p_1}{\rho g} + \frac{v_1^2}{2g} + z_1 \\ &\qquad = \frac{p_2}{\rho g} + \frac{v_2^2}{2g} + z_2\end{aligned}`,
-        note: mt`Pressure head, velocity head and elevation head all have units of metres. Use one pressure reference consistently and ${im(String.raw`g = 9.80\,\mathrm{m/s^2}`, 'g = 9.80 m/s²')}.`
+        note: 'For steady, incompressible flow along a streamline, with uniform section velocities and no losses or shaft work. All terms are head in metres. Use a shared elevation datum and pressure reference.'
       },
       {
         label: 'Hydraulic grade line',
@@ -319,11 +322,6 @@ export const topics = [
         tex: String.raw`\mathrm{EGL} = \mathrm{HGL} + \frac{v^2}{2g}`,
         note: mt`The gap ${im(String.raw`\mathrm{EGL} - \mathrm{HGL}`, 'EGL − HGL')} is velocity head. For this model without pumps, turbines or losses, EGL is constant along the flow.`
       }
-    ],
-    assumptions: [
-      'Assume steady, incompressible flow with uniform section velocities. Take the kinetic-energy correction factor as one.',
-      'Apply the ideal balance along the flow with no head loss and no pump or turbine work.',
-      'Use a shared elevation datum and the same gauge or absolute pressure reference at both sections. Real cavitation requires an absolute-pressure check.'
     ],
     misconceptions: [
       {
@@ -365,7 +363,6 @@ export const topics = [
     color: '#dc4d69',
     symbol: 'ΔV',
     url: 'https://jiaruilei.github.io/jet-flow/',
-    prerequisites: ['continuity'],
     objectives: [
       'Write a steady momentum balance using inlet and outlet velocity components.',
       'Distinguish force on the fluid from the opposite force on the vane.',
@@ -382,7 +379,7 @@ export const topics = [
         label: 'Force on the vane in this model',
         formula: 'F_x = ρAV²(1 − cosθ),  F_y = ρAV² sinθ',
         tex: String.raw`\begin{aligned}F_x &= \rho A V^2(1-\cos\theta) \\ F_y &= \rho A V^2\sin\theta\end{aligned}`,
-        note: mt`The incoming jet points right. ${im(String.raw`\theta`, 'θ')} is the downward deflection from that direction, from ${im(String.raw`0^\circ`, '0°')} to ${im(String.raw`180^\circ`, '180°')}. Positive force on the vane is rightward in ${im('x')} and upward in ${im('y')}.`
+        note: mt`For a stationary vane with equal inlet and outlet speeds, atmospheric jet pressure and negligible weight. The jet enters rightward and turns downward through ${im(String.raw`\theta`, 'θ')}. Positive ${im('x')} and ${im('y')} forces on the vane point rightward and upward.`
       },
       {
         label: 'Jet flow and resultant',
@@ -390,11 +387,6 @@ export const topics = [
         tex: String.raw`\begin{aligned}A &= \frac{\pi D^2}{4}, \qquad \dot{m} = \rho AV \\ F &= \sqrt{F_x^2 + F_y^2}\end{aligned}`,
         note: mt`Water density is ${im(String.raw`1000\,\mathrm{kg/m^3}`, '1000 kg/m³')} in the app. At a fixed diameter and deflection angle, each force component scales with ${im('V^2', 'V²')}.`
       }
-    ],
-    assumptions: [
-      'The vane is stationary. A steady water jet follows the prescribed deflection.',
-      mt`The ideal model uses the same speed ${im('V')} at inlet and outlet and neglects losses.`,
-      'Both free-jet sections are at atmospheric pressure. The component formulas neglect gravity over the turning region and describe force on the vane.'
     ],
     misconceptions: [
       {

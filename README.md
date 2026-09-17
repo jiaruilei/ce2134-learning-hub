@@ -1,6 +1,6 @@
 # CE2134 Learning Hub (Part 1)
 
-A review and self-study hub that connects six existing CE2134 fluid-mechanics platforms. Each module combines learning objectives, essential equations, assumptions, common misconceptions, a guided lab activity and practice questions.
+A review and self-study hub that connects six existing CE2134 fluid-mechanics platforms. Each module combines learning objectives, labelled diagrams, essential equations, common misconceptions, a guided lab activity and practice questions. Essential equation conditions appear in short notes alongside the formulas.
 
 The hub is a separate static website. The six existing repositories and deployed applications remain unchanged. Lab links open their existing URLs in a new tab, leaving the hub available for review and practice.
 
@@ -24,15 +24,17 @@ These are external lab launches, not embedded or copied applications. The hub do
 - Each chapter saves its own question order, checked answers, hints and place. Starting or resuming another chapter preserves all other chapter sessions. The Topics homepage has no shared practice button.
 - Topic pages also offer Review, Interactive platform and the chapter's current practice action, wrapping on small screens.
 - Practice and completion summaries stay within each chapter. Active practice URLs identify the chapter so refreshing or using browser history restores the right set.
-- Six review modules with suggested foundations and connections between concepts.
-- Six labelled vector diagrams illustrate chapter geometry and physical quantities. Each review has an **Enlarge** control. Relevant checked answers and session solutions offer **View chapter diagram** as an optional conceptual reference.
-- **Twenty questions per chapter, six per practice session**, with retries of that chapter's missed questions. The source bank has 126 questions, including six connecting questions reserved for future use. Mixed-topic revision is not exposed in the interface.
+- Six review modules with connections between concepts.
+- All six chapters use a consistent concept layout with a labelled vector diagram and its equations. Hydrostatic forces has separate **Plane surfaces** and **Curved surfaces** groups in this same layout. Each diagram has an **Enlarge** control. Relevant checked answers and session solutions offer **View chapter diagram** as an optional conceptual reference.
+- **Twenty questions per chapter, six per practice session**, with retries of that chapter's missed questions. The active bank has 126 questions, including six connecting questions reserved for future use. Hydrostatic forces includes eight curved-surface questions. Mixed-topic revision is not exposed in the interface.
 - Hints, worked solutions, answer tolerances and a session summary.
 - A personal review checklist, an unfinished-session resume option, and a **Clear progress** footer button. Clearing requires confirmation and returns to Topics.
 
 Each chapter rotates through its twenty-question pool. New sets prioritise questions not yet answered on this browser. Once the pool has been covered, selection favours the older half of the attempted questions to avoid immediate repetition. Within that selection, sets aim for two Foundation, three Apply and one Connect question, with a spread of concept tags and question types. The difficulty mix can vary when the remaining unseen questions or older candidate pool cannot supply that balance.
 
 The progress bars still count checked questions in the current set, normally out of six. Unfinished sessions keep their existing questions, order, answers and hints. Retry sets contain the questions missed in that chapter's last set. Existing attempts and review marks are retained. The bank is finite and does not generate new questions during student use.
+
+Three replaced plane-surface questions remain in `archivedQuestions` with their original IDs, wording and answer keys. They remain available to saved sessions, retries and history, but new sets draw only from the twenty active questions in each chapter.
 
 This is formative self-study practice. Answers and solutions are part of the public client-side source; the hub is not a secure examination or grading system.
 
@@ -68,7 +70,7 @@ The hub does not ask for a name, student number, email address or login. Its rev
 
 | Source | Purpose |
 | --- | --- |
-| `content/topics.js` | Module text, equations, assumptions, misconceptions, guided activities, prerequisite links and external lab URLs. |
+| `content/topics.js` | Module text, equations and their notes, review groups, misconceptions, guided activities and external lab URLs. |
 | `assets/diagrams/`, `content/diagrams.js` | Original SVG concept diagrams, accessible descriptions and explicit question-to-diagram references. |
 | `content/questions.js`, `content/questions-*.js` | The question bank and chapter additions, answer keys, hints, worked solutions, tags and numerical tolerances. |
 | `lib/practice.js` | Grading, set selection, retry selection and session validation. |
@@ -86,6 +88,8 @@ Topic prose uses the `mathText` tagged template and `inlineMath(tex, fallback)` 
 After content changes, run `npm test` and `npm run build`, then inspect the affected pages in the local preview. Automated checks complement instructor review; they cannot establish that the material matches the intended lecture or assessment standard.
 
 Chapter diagrams use symbolic labels and schematic geometry, not the dimensions of a particular practice question. The feedback references in `content/diagrams.js` are explicitly selected for compatible concepts. Keep this selection narrow when adding questions, especially for curved gates, layered fluids, head losses and different jet geometries. In SVGs, use proper subscript/superscript text spans and retain accessible titles and descriptions. The enlarged viewer supports horizontal scrolling on narrow screens and closes with Escape or its Close button.
+
+The curved-gate diagram shows a quarter-cylinder of water above the gate, with the centre of curvature at the free surface. Its force components point rightward and downward. Other wetted-side arrangements can produce an upward vertical force. Each diagram remains a conceptual reference, with numerical worked reasoning provided in the practice feedback.
 
 ### Instructor review before release
 

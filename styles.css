@@ -118,11 +118,6 @@ main { padding: 24px; min-height: 440px; outline: none; }
 .review-section, .review-details, .side-card { border: 1px solid var(--line); border-radius: 14px; background: white; padding: 20px; }
 .review-section, .review-details { margin-bottom: 16px; }
 .review-section:last-child { margin-bottom: 0; }
-.concept-diagram { margin: 0 0 16px; background: #fff; }
-.concept-diagram figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
-.concept-diagram h2 { margin: 0; }
-.concept-diagram figcaption .text-button { flex-shrink: 0; min-height: 44px; padding: 8px; font-size: 14px; }
-.concept-diagram > img { display: block; width: 100%; max-width: 520px; height: auto; margin: 0 auto; }
 .feedback-diagram-button { margin-top: 12px; min-height: 44px; }
 .diagram-dialog { width: calc(100% - 24px); max-width: 780px; max-height: calc(100dvh - 24px); padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink); box-shadow: 0 16px 48px #14203333; }
 .diagram-dialog::backdrop { background: rgba(20,32,51,.5); }
@@ -131,6 +126,17 @@ main { padding: 24px; min-height: 440px; outline: none; }
 .diagram-viewer { max-height: calc(100dvh - 150px); overflow: auto; border-radius: 8px; }
 .diagram-viewer:focus-visible { outline: 3px solid rgba(37,99,235,.35); outline-offset: 3px; }
 .diagram-viewer img { display: block; width: 100%; min-width: 620px; height: auto; }
+.concept-section { container-type: inline-size; }
+.concept-section > .section-heading { margin-bottom: 12px; }
+.concept-section .section-heading .text-button { min-height: 44px; flex-shrink: 0; }
+.concept-layout { display: grid; gap: 16px; align-items: start; }
+.concept-layout > * { min-width: 0; }
+.concept-figure { margin: 0; }
+.concept-figure img { display: block; width: 100%; max-width: 520px; height: auto; margin: 0 auto; }
+.concept-note { margin: 16px 0 0; color: var(--muted); }
+@container (min-width:760px) {
+  .concept-layout { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 20px; }
+}
 .review-details > summary { cursor: pointer; color: var(--ink); font-weight: 700; font-size: 21px; }
 .review-details > summary h2 { display: inline; margin: 0; font-size: inherit; }
 .review-details[open] > summary { margin-bottom: 18px; }
@@ -149,9 +155,6 @@ main { padding: 24px; min-height: 440px; outline: none; }
 .answer-option > span:last-child, .question-trail summary > span:nth-child(2) { min-width: 0; }
 .feedback li + li, .question-trail li + li { margin-top: .5em; }
 .equation p { font-size: 16px; color: var(--muted); margin: 8px 0 0; }
-.assumptions { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
-.assumptions summary { cursor: pointer; font-weight: 700; }
-.assumptions ul { margin-bottom: 0; }
 .misconceptions article + article { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 18px; }
 .misconceptions p { margin-bottom: 0; color: var(--muted); }
 .steps { margin: 0 0 18px; }
@@ -276,9 +279,6 @@ main { padding: 24px; min-height: 440px; outline: none; }
   .topic-icon.large svg { width: 36px; height: 36px; }
   .topic-title h1 { font-size: 26px; }
   .review-section, .review-details { padding: 18px; }
-  .concept-diagram { padding: 12px 8px; }
-  .concept-diagram figcaption { padding: 0 4px; }
-  .concept-diagram h2 { font-size: 18px; }
   .diagram-dialog { padding: 14px; }
   .diagram-dialog-header h2 { font-size: 18px; }
   .equation { padding: 14px; }

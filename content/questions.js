@@ -4,6 +4,8 @@ import {hydrostaticsQuestions} from './questions-hydrostatics.js';
 import {flowMassQuestions} from './questions-flow-mass.js';
 import {energyMomentumQuestions} from './questions-energy-momentum.js';
 
+export {archivedHydrostaticsQuestions as archivedQuestions} from './questions-hydrostatics.js';
+
 export const questions = [
   {
     id: 'pressure-01', topic: 'pressure', title: 'At an open free surface',

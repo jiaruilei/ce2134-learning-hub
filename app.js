@@ -1,5 +1,5 @@
 import {topics} from './content/topics.js';
-import {questions} from './content/questions.js';
+import {questions,archivedQuestions} from './content/questions.js';
 import {presentQuestion,presentUnit,presentQuantity} from './content/question-math.js';
 import {CHAPTER_SET_SIZE,gradeQuestion,makeSet} from './lib/practice.js';
 import {createStore} from './lib/storage.js';
@@ -10,8 +10,11 @@ import {diagrams,diagramPath,diagramForQuestion} from './content/diagrams.js';
 const main=document.querySelector('main');
 let browserStorage;try{browserStorage=window.localStorage;}catch{}
 const store=createStore(browserStorage);
-const migratedTopic=normalizeSessions(store.data,questions);
-const knownQuestions=new Set(questions.map(q=>q.id));
+// Keep replaced questions available to saved sessions, but draw new sets from
+// the active pool so an older answer is never reinterpreted as a new question.
+const sessionQuestions=[...questions,...archivedQuestions];
+const migratedTopic=normalizeSessions(store.data,sessionQuestions);
+const knownQuestions=new Set(sessionQuestions.map(q=>q.id));
 store.data.attempts=store.data.attempts.filter(a=>knownQuestions.has(a.questionId));
 store.save();
 let runVisible=false,activeTopic=null,formError='',toastTimer;
@@ -45,33 +48,38 @@ function home(){
   return `${heading('Topics (Week 1-6)')}
   <div class="topic-grid">${topics.map(topicCard).join('')}</div>`;
 }
-function conceptDiagram(id){
-  const diagram=diagrams[id];
-  if(!diagram)return '';
-  return `<figure class="concept-diagram review-section"><figcaption><h2>${esc(diagram.title)}</h2><button type="button" class="text-button" data-action="diagram" data-topic="${id}" aria-haspopup="dialog" aria-label="Enlarge diagram: ${esc(diagram.title)}">Enlarge</button></figcaption><img src="${diagramPath(id)}" alt="${esc(diagram.alt)}" width="480" height="${diagram.height}" decoding="async"></figure>`;
-}
 function feedbackDiagram(question){
   const id=diagramForQuestion(question);
   return id?`<button type="button" class="text-button feedback-diagram-button" data-action="diagram" data-topic="${id}" aria-haspopup="dialog">View chapter diagram</button>`:'';
+}
+function equationCards(equations){
+  return `<div class="equation-list">${equations.map(q=>`<article class="equation"><span>${rich(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${rich(q.formula)}</div><p>${rich(q.note)}</p></article>`).join('')}</div>`;
+}
+function topicReview(t){
+  const sections=t.reviewSections||[{id:'concepts',title:'Key equations',diagram:t.id}];
+  return sections.map(section=>{
+    const diagram=diagrams[section.diagram];
+    const equations=section.equations?section.equations.map(id=>t.equations.find(q=>q.id===id)):t.equations;
+    return `<section class="review-section concept-section" aria-labelledby="${t.id}-${section.id}"><div class="section-heading"><h2 id="${t.id}-${section.id}">${esc(section.title)}</h2><button type="button" class="text-button" data-action="diagram" data-topic="${section.diagram}" aria-haspopup="dialog" aria-label="Enlarge diagram: ${esc(diagram.title)}">Enlarge</button></div><div class="concept-layout"><figure class="concept-figure"><img src="${diagramPath(section.diagram)}" alt="${esc(diagram.alt)}" width="480" height="${diagram.height}" decoding="async"><figcaption class="sr-only">${esc(diagram.title)}</figcaption></figure>${equationCards(equations)}</div>${section.note?`<p class="concept-note">${rich(section.note)}</p>`:''}</section>`;
+  }).join('');
 }
 function topicPage(t){
   const done=!!store.data.reviewed[t.id];
   const next=topicById(t.connection.nextId);
   return `<a class="back-link" href="#/">← Topics</a><header class="topic-header"><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><nav class="topic-actions" aria-label="Topic actions"><a class="button secondary current" href="#/topic/${t.id}" aria-current="page">Review</a>${launch(t)}<a class="button primary" href="#/practice?topic=${t.id}">${practiceLabel(t.id)}</a></nav></header><div class="topic-layout"><div class="topic-body">
   <details class="review-section review-details"><summary><h2>Learning objectives</h2></summary><ul class="objective-list">${t.objectives.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></details>
-  ${conceptDiagram(t.id)}
-  <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${rich(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${rich(q.formula)}</div><p>${rich(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></section></section>
+  ${topicReview(t)}
   <details class="review-section review-details"><summary><h2>Common misconceptions</h2></summary><div class="misconceptions">${t.misconceptions.map(m=>`<article><h3>${rich(m.claim)}</h3><p>${rich(m.correction)}</p></article>`).join('')}</div></details>
   <details class="review-section review-details"><summary><h2>Guided activity</h2></summary><h3>${rich(t.guidedActivity.title)}</h3><ol class="steps">${t.guidedActivity.steps.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><div class="reflection"><strong>Pause and explain</strong><p>${rich(t.guidedActivity.reflection)}</p></div></details>
   <details class="connection review-details"><summary><h2>${rich(t.connection.title)}</h2></summary><p>${rich(t.connection.text)}</p>${next?`<a class="quiet-link" href="#/topic/${next.id}">${esc(next.title)} →</a>`:'<a class="quiet-link" href="#/">All topics →</a>'}</details></div>
-  <aside class="topic-side"><div class="side-card"><button class="button ${done?'secondary':'primary'} full" data-action="review" data-topic="${t.id}" aria-pressed="${done}">${done?'✓ Reviewed':'Mark as reviewed'}</button>${t.prerequisites.length?`<hr><h2>Prerequisites</h2>${t.prerequisites.map(id=>`<a class="side-link" href="#/topic/${id}">${esc(topicName(id))} →</a>`).join('')}`:''}</div></aside></div>`;
+  <aside class="topic-side"><div class="side-card"><button class="button ${done?'secondary':'primary'} full" data-action="review" data-topic="${t.id}" aria-pressed="${done}">${done?'✓ Reviewed':'Mark as reviewed'}</button></div></aside></div>`;
 }
 
 function questionView(){
   const session=currentSession();
   if(!session)return home();
   if(session.finished)return resultView();
-  const q=presentQuestion(questions.find(item=>item.id===session.ids[session.index]));
+  const q=presentQuestion(sessionQuestions.find(item=>item.id===session.ids[session.index]));
   const answer=session.answers[q.id],draft=answer?.value??drafts[`${session.id}:${q.id}`]??'';
   const hintUsed=!!session.hints[q.id];
   return `<div class="practice-top"><button class="text-button" data-action="leave">← Save & leave</button><span>${session.index+1} / ${session.ids.length} questions</span></div><div class="question-progress" aria-label="${Object.keys(session.answers).length} of ${session.ids.length} questions checked">${session.ids.map((id,i)=>`<span class="${session.answers[id]?(session.answers[id].correct?'correct':'incorrect'):i===session.index?'current':''}"></span>`).join('')}</div>
@@ -86,7 +94,7 @@ function resultView(){
   const session=currentSession(),answers=Object.values(session.answers);
   const correct=answers.filter(a=>a.correct).length;
   const missed=session.ids.filter(id=>!session.answers[id]?.correct);
-  return `<section class="result-hero"><h1>Session complete</h1><div class="result-score"><strong>${correct}</strong><span>/ ${session.ids.length}<small>questions correct</small></span></div><div class="button-row">${missed.length?'<button class="button primary" data-action="retry-session">Retry these questions →</button>':''}<button class="button ${missed.length?'secondary':'primary'}" data-action="leave">Back to topic</button></div></section><section class="section-block"><div class="section-heading"><h2>Answers &amp; solutions</h2><a class="quiet-link" href="#/">All topics →</a></div><div class="question-trail">${session.ids.map((id,i)=>{const q=presentQuestion(questions.find(x=>x.id===id)),a=session.answers[id];return `<details><summary><span class="trail-result ${a.correct?'is-correct':'is-incorrect'}" aria-label="${a.correct?'Correct':'Incorrect'}">${a.correct?'✓':'↻'}</span><span><small>${i+1} · ${esc(topicName(q.topic))}</small>${rich(q.prompt)}</span><span class="trail-expand" aria-hidden="true">+</span></summary><div><ol>${q.solution.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><p>${rich(q.takeaway)}</p>${feedbackDiagram(q)}</div></details>`;}).join('')}</div></section>`;
+  return `<section class="result-hero"><h1>Session complete</h1><div class="result-score"><strong>${correct}</strong><span>/ ${session.ids.length}<small>questions correct</small></span></div><div class="button-row">${missed.length?'<button class="button primary" data-action="retry-session">Retry these questions →</button>':''}<button class="button ${missed.length?'secondary':'primary'}" data-action="leave">Back to topic</button></div></section><section class="section-block"><div class="section-heading"><h2>Answers &amp; solutions</h2><a class="quiet-link" href="#/">All topics →</a></div><div class="question-trail">${session.ids.map((id,i)=>{const q=presentQuestion(sessionQuestions.find(x=>x.id===id)),a=session.answers[id];return `<details><summary><span class="trail-result ${a.correct?'is-correct':'is-incorrect'}" aria-label="${a.correct?'Correct':'Incorrect'}">${a.correct?'✓':'↻'}</span><span><small>${i+1} · ${esc(topicName(q.topic))}</small>${rich(q.prompt)}</span><span class="trail-expand" aria-hidden="true">+</span></summary><div><ol>${q.solution.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><p>${rich(q.takeaway)}</p>${feedbackDiagram(q)}</div></details>`;}).join('')}</div></section>`;
 }
 function render(){
   const hash=location.hash.slice(1)||'/';
@@ -176,7 +184,7 @@ main.addEventListener('change',event=>{
 main.addEventListener('input',event=>{if(event.target.name==='answer'&&currentSession()){const s=currentSession();drafts[`${s.id}:${s.ids[s.index]}`]=event.target.value;}});
 main.addEventListener('submit',event=>{
   if(event.target.id!=='answerForm')return;event.preventDefault();const s=currentSession(),id=s.ids[s.index];if(s.answers[id])return;
-  const q=questions.find(item=>item.id===id);const value=new FormData(event.target).get('answer');const grade=gradeQuestion(q,value);
+  const q=sessionQuestions.find(item=>item.id===id);const value=new FormData(event.target).get('answer');const grade=gradeQuestion(q,value);
   if(!grade.valid){formError=grade.message;document.getElementById('answerError').textContent=formError;return;}
   const answer={value:grade.value,correct:grade.correct,hintUsed:!!(s.hintEverUsed?.[id]||s.hints[id])};s.answers[id]=answer;
   store.data.attempts.push({runId:s.id,questionId:id,topic:q.topic,...answer,at:new Date().toISOString()});store.save();formError='';render();document.getElementById('feedback')?.focus({preventScroll:true});

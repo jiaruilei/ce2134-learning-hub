@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 410" role="img" aria-labelledby="forces-curved-title forces-curved-desc">
+  <title id="forces-curved-title">Water forces on a quarter-circular gate</title>
+  <desc id="forces-curved-desc">Side view of a quarter-cylindrical gate of radius R and width b out of the page. Its circle centre O lies at the free surface. Water occupies the shaded quarter-disc above and to the left of the gate, with air below and to the right. The shaded water volume is pi R squared b divided by four. The dashed blue vertical projection has area A v equal to b R. The water exerts a horizontal force F H to the right at depth two R over three and a vertical force F V downward through the shaded volume centroid, four R over three pi to the right of O. Their resultant F R points down and right along a line through O. Dashed amber lines show the lines of action.</desc>
+  <defs>
+    <marker id="curved-force-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#b45309"/>
+    </marker>
+    <marker id="curved-dimension" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 9 1 L 1 5 L 9 9" fill="none" stroke="#48617f" stroke-width="1.7"/>
+    </marker>
+  </defs>
+  <rect width="480" height="410" rx="12" fill="#fff"/>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#233651">
+    <text x="24" y="29">Forces exerted by the water</text>
+    <text x="453" y="29" text-anchor="end" font-size="16" fill="#48617f">Side view</text>
+
+    <!-- The wetted region is the quarter-disc above and left of the gate. -->
+    <path d="M 98 82 H 278 A 180 180 0 0 1 98 262 Z" fill="#dbeafe"/>
+    <path d="M 98 82 V 262" fill="none" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 98 82 H 278" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="175" y="63" text-anchor="middle" font-size="17">Free surface</text>
+    <text x="174" y="112" text-anchor="middle" fill="#2563eb">Water</text>
+    <text x="218" y="149" text-anchor="middle" font-family="Cambria Math, Georgia, serif" font-size="24" fill="#2563eb">𝒱</text>
+    <text x="281" y="305" font-size="17" fill="#48617f">Air</text>
+
+    <!-- Radius and the side view of the rectangular vertical projection. -->
+    <path d="M 53 82 H 90 M 53 262 H 90" fill="none" stroke="#94a3b8" stroke-width="1.3"/>
+    <path d="M 59 86 V 258" fill="none" stroke="#48617f" stroke-width="1.7" marker-start="url(#curved-dimension)" marker-end="url(#curved-dimension)"/>
+    <rect x="44" y="155" width="30" height="31" rx="4" fill="#fff"/>
+    <text x="59" y="179" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="24">R</text>
+    <path d="M 278 82 H 354 M 282 262 H 354" fill="none" stroke="#93b4df" stroke-width="1.3" stroke-dasharray="5 5"/>
+    <rect x="346" y="82" width="8" height="180" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8" stroke-dasharray="6 4"/>
+    <text x="351" y="63" text-anchor="middle" font-size="17" fill="#2563eb">Vertical projection</text>
+    <text x="367" y="158" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="22" fill="#2563eb">A<tspan font-family="Segoe UI, Arial, sans-serif" font-style="normal" font-size="13" baseline-shift="sub">v</tspan><tspan font-style="normal"> = </tspan>bR</text>
+
+    <!-- Correct lines of action: FH at y=2R/3, FV at x=4R/(3pi). -->
+    <path d="M 98 82 L 194.666 233.841 M 174.394 202 H 232.164 M 174.394 202 V 244.986" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.8"/>
+    <path d="M 278 82 A 180 180 0 0 1 98 262" fill="none" stroke="#48617f" stroke-width="7"/>
+    <circle cx="98" cy="82" r="4" fill="#48617f"/>
+    <text x="83" y="73" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="23">O</text>
+    <path d="M 263 158 L 290 137 H 303" fill="none" stroke="#48617f" stroke-width="1.3"/>
+    <text x="302" y="128" text-anchor="middle" font-size="17">Gate</text>
+
+    <!-- Component vectors begin at their intersections with the curved gate. -->
+    <path d="M 232.164 202 H 288.164" fill="none" stroke="#b45309" stroke-width="3.3" marker-end="url(#curved-force-arrow)"/>
+    <path d="M 174.394 244.986 V 332.951" fill="none" stroke="#b45309" stroke-width="3.3" marker-end="url(#curved-force-arrow)"/>
+    <path d="M 194.666 233.841 L 250.666 321.806" fill="none" stroke="#b45309" stroke-width="3.5" marker-end="url(#curved-force-arrow)"/>
+    <text x="279" y="189" text-anchor="middle" fill="#b45309" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="25">F<tspan font-family="Segoe UI, Arial, sans-serif" font-style="normal" font-size="14" baseline-shift="sub">H</tspan></text>
+    <text x="158" y="311" text-anchor="end" fill="#b45309" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="25">F<tspan font-family="Segoe UI, Arial, sans-serif" font-style="normal" font-size="14" baseline-shift="sub">V</tspan></text>
+    <text x="264" y="335" fill="#b45309" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="25">F<tspan font-family="Segoe UI, Arial, sans-serif" font-style="normal" font-size="14" baseline-shift="sub">R</tspan></text>
+
+    <text x="24" y="362" font-size="18">Shaded volume <tspan font-family="Cambria Math, Georgia, serif" font-size="22">𝒱</tspan><tspan font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="22"><tspan font-style="normal"> = π</tspan>R<tspan font-size="14" baseline-shift="super">2</tspan>b<tspan font-style="normal">/4</tspan></tspan></text>
+    <text x="24" y="390" font-size="17" fill="#48617f">Width <tspan font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="21">b</tspan> extends out of the page</text>
+  </g>
+</svg>

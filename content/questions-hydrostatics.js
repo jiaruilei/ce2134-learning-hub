@@ -1,5 +1,5 @@
 // Additional chapter practice. Numerical tolerances use the displayed answer unit.
-export const hydrostaticsQuestions = [
+const hydrostaticsQuestionVersions = [
   {
     id: 'pressure-07', topic: 'pressure', title: 'Moving upward in still water',
     kind: 'choice', difficulty: 'Foundation',
@@ -308,4 +308,43 @@ export const hydrostaticsQuestions = [
     takeaway: 'When density changes with depth, integrate each part of the pressure distribution separately.',
     tags: ['layered-fluids', 'pressure-distribution'],
   },
+  {
+    id: 'forces-21', topic: 'forces', title: 'Water beneath a curved roof',
+    kind: 'choice', difficulty: 'Foundation',
+    prompt: 'Water presses against the underside of a curved roof with no overhang. What is the direction of the net vertical pressure force exerted by the water on the roof?',
+    given: 'The roof is entirely below the open free surface of a connected reservoir. The water is at rest, the upper side of the roof is at atmospheric pressure, and roof weight is excluded.',
+    choices: ['Downward because every hydrostatic force equals a water weight', 'Zero because pressure forces on a curved surface always cancel', 'Upward because the water pushes into the roof from below', 'Horizontal because the water is at rest'], answerIndex: 2,
+    hint: 'Draw the local pressure force from the water into the roof. Identify its vertical component.',
+    solution: ['Gauge pressure is positive below the connected reservoir’s free surface.', 'For this roof without an overhang, pressure from beneath has upward vertical components. Adding them gives an upward net vertical force.'],
+    takeaway: 'The wetted side determines the vertical-force direction on a curved surface.',
+    tags: ['curved-surface', 'force-direction'],
+  },
+  {
+    id: 'forces-22', topic: 'forces', title: 'Vertical force on a quarter-circular gate',
+    kind: 'numeric', difficulty: 'Apply',
+    prompt: 'A quarter-circular gate has radius R = 1.00 m and width b = 1.00 m. Its centre of curvature is at the free surface. Water occupies the quarter-cylinder above the arc, from the surface down to the point directly below the centre. Find the magnitude of the vertical water-force component.',
+    given: 'The water is at rest. The free surface and the other side of the gate are at atmospheric pressure. ρ = 1000 kg/m³ and g = 9.80 m/s².',
+    answer: 7.696902001294993, unit: 'kN', tolerance: 0.02,
+    hint: 'The volume above the arc is a quarter-circle area multiplied by the gate width.',
+    solution: ['The water volume above the arc is V = πR²b / 4 = π × 1.00² × 1.00 / 4 = 0.785398 m³.', 'The vertical component has magnitude F_V = ρgV = 1000 × 9.80 × 0.785398 / 1000 = 7.697 kN and acts downward.'],
+    takeaway: 'Calculate the volume above the curved surface before using its water weight.',
+    tags: ['curved-surface', 'imaginary-fluid-volume'],
+  },
+  {
+    id: 'forces-23', topic: 'forces', title: 'Resultant on a quarter-circular gate',
+    kind: 'numeric', difficulty: 'Connect',
+    prompt: 'A quarter-circular gate has radius R = 1.00 m and width b = 1.00 m. The arc runs from the free surface to the point directly below its centre of curvature, which is at the surface. Water occupies the quarter-cylinder above the arc. Find the magnitude of the resultant water force on the gate.',
+    given: 'The water is at rest. The free surface and the other side of the gate are at atmospheric pressure. ρ = 1000 kg/m³ and g = 9.80 m/s².',
+    answer: 9.124269856681074, unit: 'kN', tolerance: 0.02,
+    hint: 'Use the vertical projection for F_H and the water volume above the arc for F_V. Then combine the perpendicular components.',
+    solution: ['The vertical projection has area bR and centroid depth R / 2, so F_H = ρg bR² / 2 = 4.900 kN.', 'The quarter-cylinder volume gives F_V = ρgπR²b / 4 = 7.697 kN downward.', 'The resultant is F_R = √(F_H² + F_V²) = √(4.900² + 7.696902²) = 9.124 kN.', 'Its direction is α = tan⁻¹(F_V / F_H) = 57.52° below the horizontal, away from the water.'],
+    takeaway: 'Use the projected area and water volume to obtain components before finding the resultant.',
+    tags: ['curved-surface', 'vector-components'],
+  },
 ];
+
+// Keep prior question meanings addressable for saved sessions and attempts.
+// Archived questions are excluded from every newly generated practice pool.
+const archivedHydrostaticsIds = new Set(['forces-09', 'forces-16', 'forces-19']);
+export const hydrostaticsQuestions = hydrostaticsQuestionVersions.filter(question => !archivedHydrostaticsIds.has(question.id));
+export const archivedHydrostaticsQuestions = hydrostaticsQuestionVersions.filter(question => archivedHydrostaticsIds.has(question.id));

@@ -12,6 +12,11 @@ export const diagrams = {
     title: 'Forces on an inclined gate',
     alt: 'An inclined submerged gate of area A. The centroid C is at vertical depth h c. The centre of pressure CP is deeper, at h cp. The resultant force F acts normal to the gate through CP. Theta is measured from the horizontal.',
   },
+  'forces-curved': {
+    height: 410,
+    title: 'Forces on a quarter-circular gate',
+    alt: 'A quarter-circular gate of radius R and width b out of the page. The centre of curvature O is at the free surface. Shading marks the quarter-cylinder of water above the gate. The vertical projected area is A v. The force of water on the gate has a rightward horizontal component F H and a downward vertical component F V. The resultant F R points down and right along a line through O.',
+  },
   flowlines: {
     height: 360,
     title: 'Three ways to trace a flow',
@@ -50,6 +55,9 @@ const feedbackQuestions = new Set([
 ]);
 
 export function diagramForQuestion(question) {
+  // These conceptual questions match the depicted projection and wetted side.
+  // Other curved-gate questions use different submergence or component ratios.
+  if(question.topic==='forces'&&['forces-04','forces-17','forces-22','forces-23'].includes(question.id))return 'forces-curved';
   return feedbackQuestions.has(question.id) && Object.hasOwn(diagrams, question.topic)
     ? question.topic : null;
 }

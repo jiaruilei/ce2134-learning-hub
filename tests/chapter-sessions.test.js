@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {questions} from '../content/questions.js';
+import {questions,archivedQuestions} from '../content/questions.js';
+import {makeSet,gradeQuestion} from '../lib/practice.js';
 import {createStore} from '../lib/storage.js';
 import {normalizeSessions,topicPracticeAction,topicProgress} from '../lib/practice-flow.js';
 
@@ -29,6 +30,43 @@ function reopen(storage){
   normalizeSessions(store.data,questions);
   return store;
 }
+
+test('replaced questions keep saved sessions and answers intact while new sets use the active pool',()=>{
+  const bank=[...questions,...archivedQuestions];
+  const retiredIds=['forces-09','forces-16','forces-19'];
+  assert.deepEqual(archivedQuestions.map(q=>q.id).sort(),retiredIds);
+  const ids=['forces-09','forces-16','forces-19','forces-04','forces-05','forces-14'];
+  const answer={value:archivedQuestions.find(q=>q.id==='forces-09').answerIndex,correct:true,hintUsed:false};
+  const legacy=chapter('forces',{id:'existing-forces-session',ids,index:1,answers:{'forces-09':answer},hints:{'forces-16':true}});
+  const history={questionId:'forces-09',topic:'forces',correct:true,at:'2026-09-18T10:00:00Z'};
+  const storage=memoryStorage(JSON.stringify({version:2,reviewed:{forces:true},attempts:[history],topicSessions:{forces:legacy}}));
+  const first=createStore(storage);
+  normalizeSessions(first.data,bank);
+  first.save();
+  const reopened=createStore(storage);
+  normalizeSessions(reopened.data,bank);
+  const current=reopened.data.topicSessions.forces;
+  assert.deepEqual(current,legacy);
+  assert.deepEqual(topicProgress(current),{checked:1,total:6,percent:17});
+  assert.deepEqual(reopened.data.attempts,[history]);
+  assert.equal(reopened.data.reviewed.forces,true);
+  assert.equal(topicPracticeAction(current,'forces',bank),'resume');
+  for(const retired of archivedQuestions){
+    assert.equal(gradeQuestion(retired,retired.answerIndex).correct,true);
+  }
+  // A completed session can still show its original solutions after a reload.
+  const completed={...current,index:5,finished:true,answers:Object.fromEntries(ids.map(id=>{
+    const q=bank.find(q=>q.id===id);
+    return [id,{value:q.kind==='choice'?q.answerIndex:q.answer,correct:true,hintUsed:false}];
+  }))};
+  reopened.data.topicSessions.forces=completed;
+  normalizeSessions(reopened.data,bank);
+  assert.deepEqual(reopened.data.topicSessions.forces,completed);
+  const next=makeSet(questions,{mode:'topic',topic:'forces',count:20,attempts:reopened.data.attempts});
+  assert.equal(next.length,20);
+  assert.ok(next.every(id=>!retiredIds.includes(id)));
+  assert.ok(['forces-21','forces-22','forces-23'].every(id=>next.includes(id)));
+});
 
 test('chapters persist, resume, and finish independently while general practice remains saved',()=>{
   const storage=memoryStorage();

@@ -1,14 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {questions} from '../content/questions.js';
+import {questions,archivedQuestions} from '../content/questions.js';
 import {questionMath,presentQuestion,presentUnit,presentQuantity} from '../content/question-math.js';
 
 const plain=value=>Array.isArray(value)?value.map(part=>typeof part==='object'?part.text:part).join(''):value;
 const fields=['prompt','given','hint','takeaway','solution','choices'];
+const allQuestionVersions=[...questions,...archivedQuestions];
 
 test('every question has a reviewed math presentation without changing its wording or grading',()=>{
-  assert.deepEqual(Object.keys(questionMath).sort(),questions.map(q=>q.id).sort());
-  for(const question of questions){
+  assert.deepEqual(Object.keys(questionMath).sort(),allQuestionVersions.map(q=>q.id).sort());
+  for(const question of allQuestionVersions){
     const overlay=questionMath[question.id];
     for(const [key,value] of Object.entries(overlay)){
       assert.ok(fields.includes(key),`${question.id}: unexpected overlay ${key}`);
