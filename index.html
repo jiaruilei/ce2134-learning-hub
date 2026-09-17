@@ -32,7 +32,7 @@
     <main id="main" tabindex="-1"></main>
     <footer class="page-footer">
       <span>CE2134 · Fluid mechanics</span>
-      <a href="https://www.garylei.com/gallery" target="_blank" rel="noopener noreferrer" title="Photo credits: Gary Lei, Zichen Xu, and Yushu Xie. Includes a submerged vegetation research setup.">Photos · LEI gallery ↗</a>
+      <a href="https://www.garylei.com/gallery" target="_blank" rel="noopener noreferrer" title="Header photo credits: Gary Lei, Zichen Xu, and Yushu Xie. Includes a submerged vegetation research setup.">Header photos · LEI gallery ↗</a>
       <button type="button" class="clear-progress-button" data-action="clear-progress">Clear progress</button>
     </footer>
   </div>
@@ -44,6 +44,13 @@
       <button type="submit" class="button secondary" value="cancel" autofocus>Cancel</button>
       <button type="submit" class="button danger" value="clear">Clear progress</button>
     </form>
+  </dialog>
+  <dialog id="diagramDialog" class="diagram-dialog" aria-labelledby="diagramTitle">
+    <header class="diagram-dialog-header">
+      <h2 id="diagramTitle">Concept diagram</h2>
+      <form method="dialog"><button type="submit" class="button secondary compact" autofocus>Close</button></form>
+    </header>
+    <div class="diagram-viewer" tabindex="0" role="region" aria-label="Enlarged diagram. Scroll horizontally if needed."><img alt=""></div>
   </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module" src="./app.js"></script>

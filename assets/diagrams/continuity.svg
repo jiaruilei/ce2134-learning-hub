@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 340" role="img" aria-labelledby="continuity-title continuity-desc">
+  <title id="continuity-title">Fixed control volume in a narrowing pipe</title>
+  <desc id="continuity-desc">Steady flow enters at section one and leaves at section two. The pipe has an impermeable wall. A dashed boundary encloses a fixed fluid control volume between the inlet and outlet sections and follows the pipe wall. Each section is labelled with its area A, density rho and mean velocity V. Arrow lengths indicate direction only, not velocity magnitude.</desc>
+  <defs>
+    <marker id="continuity-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M1 1 9 5 1 9Z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="Arial, 'Segoe UI', sans-serif" fill="#233651">
+    <text x="24" y="31" font-size="20" font-weight="700">Steady pipe flow</text>
+    <path d="M198 58H230" stroke="#48617f" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="239" y="64" font-size="18" fill="#48617f">Fixed control volume</text>
+
+    <path d="M24 111H164 C231 111 264 153 316 153 H456 V217H316 C264 217 231 259 164 259 H24Z" fill="#dbeafe"/>
+    <g fill="none" stroke="#233651" stroke-width="4" stroke-linecap="round">
+      <path d="M24 106H164 C231 106 264 148 316 148H456"/>
+      <path d="M24 264H164 C231 264 264 222 316 222H456"/>
+    </g>
+    <path d="M73 113H164 C231 113 264 155 316 155 H407V215H316 C264 215 231 257 164 257 H73Z" fill="none" stroke="#48617f" stroke-width="2" stroke-dasharray="6 5" stroke-linejoin="round"/>
+    <g fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#continuity-arrow)">
+      <path d="M29 185H125"/>
+      <path d="M344 185H440"/>
+    </g>
+
+    <text x="73" y="88" text-anchor="middle" font-size="19" font-weight="700">Inlet 1</text>
+    <text x="407" y="126" text-anchor="middle" font-size="19" font-weight="700">Outlet 2</text>
+    <g font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="23">
+      <text x="88" y="171">V<tspan baseline-shift="sub" font-size="16" font-style="normal">1</tspan></text>
+      <text x="367" y="171">V<tspan baseline-shift="sub" font-size="16" font-style="normal">2</tspan></text>
+      <text x="73" y="297" text-anchor="middle">A<tspan baseline-shift="sub" font-size="16" font-style="normal">1</tspan><tspan font-family="Arial, 'Segoe UI', sans-serif" font-style="normal">, </tspan>ρ<tspan baseline-shift="sub" font-size="16" font-style="normal">1</tspan></text>
+      <text x="407" y="255" text-anchor="middle">A<tspan baseline-shift="sub" font-size="16" font-style="normal">2</tspan><tspan font-family="Arial, 'Segoe UI', sans-serif" font-style="normal">, </tspan>ρ<tspan baseline-shift="sub" font-size="16" font-style="normal">2</tspan></text>
+    </g>
+    <path d="M245.63 243L270 295" fill="none" stroke="#48617f" stroke-width="1.5"/>
+    <circle cx="245.63" cy="243" r="3" fill="#48617f"/>
+    <text x="289" y="319" text-anchor="middle" font-size="18" fill="#48617f">Impermeable wall</text>
+  </g>
+</svg>

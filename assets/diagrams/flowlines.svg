@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-labelledby="flowlines-title flowlines-desc">
+  <title id="flowlines-title">Streamline, pathline and streakline constructions</title>
+  <desc id="flowlines-desc">Three independent schematic panels for unsteady flow. A streamline is tangent to the velocity arrows at one instant. A pathline records successive positions of the same particle at times t one, t two and t three. A streakline joins the current positions of different particles released from one fixed source. The different curves illustrate the constructions, not a calculated common velocity field. In steady flow, the three lines through the same location coincide.</desc>
+  <defs>
+    <marker id="flowlines-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1 9 5 1 9Z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="Arial, 'Segoe UI', sans-serif" fill="#233651">
+    <g fill="#eff6ff" stroke="#d5e5f8">
+      <rect x="12" y="12" width="456" height="100" rx="12"/>
+      <rect x="12" y="124" width="456" height="100" rx="12"/>
+      <rect x="12" y="236" width="456" height="112" rx="12"/>
+    </g>
+
+    <text x="27" y="39" font-size="21" font-weight="700">Streamline</text>
+    <text x="225" y="39" font-size="17" fill="#48617f">Velocity at one instant</text>
+    <path d="M48 88 C91 88 109 58 151 66 S212 105 253 88 S313 53 354 65 S399 98 432 77" fill="none" stroke="#2563eb" stroke-width="3" marker-mid="url(#flowlines-arrow)"/>
+
+    <text x="27" y="151" font-size="21" font-weight="700">Pathline</text>
+    <text x="217" y="151" font-size="17" fill="#48617f">One particle over time</text>
+    <path d="M48 190 C109 162 143 195 201 181 S297 159 345 178 S407 195 432 169" fill="none" stroke="#48617f" stroke-width="2.5" stroke-dasharray="5 5"/>
+    <g stroke="#2563eb" stroke-width="2.5" fill="#fff">
+      <circle cx="48" cy="190" r="5"/>
+      <circle cx="201" cy="181" r="5"/>
+    </g>
+    <circle cx="432" cy="169" r="7" fill="#2563eb"/>
+    <g font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" text-anchor="middle">
+      <text x="48" y="215">t<tspan baseline-shift="sub" font-size="14" font-style="normal">1</tspan></text>
+      <text x="201" y="212">t<tspan baseline-shift="sub" font-size="14" font-style="normal">2</tspan></text>
+      <text x="432" y="205">t<tspan baseline-shift="sub" font-size="14" font-style="normal">3</tspan></text>
+    </g>
+
+    <text x="27" y="263" font-size="21" font-weight="700">Streakline</text>
+    <text x="224" y="263" font-size="17" fill="#48617f">Particles at one instant</text>
+    <path d="M48 302 C130 271 200 279 253 306 S373 334 432 287" fill="none" stroke="#93b9ee" stroke-width="2.5"/>
+    <g fill="#2563eb" stroke="#fff" stroke-width="1.5">
+      <circle cx="48" cy="302" r="6"/>
+      <circle cx="107.17" cy="285.75" r="5"/>
+      <circle cx="161.38" cy="282.25" r="5"/>
+      <circle cx="210.14" cy="289.63" r="5"/>
+      <circle cx="253" cy="306" r="5"/>
+      <circle cx="295.03" cy="321.03" r="5"/>
+      <circle cx="340.25" cy="324.25" r="5"/>
+      <circle cx="386.59" cy="313.59" r="5"/>
+      <circle cx="432" cy="287" r="5"/>
+    </g>
+    <path d="M48 310V324" stroke="#48617f" stroke-width="1.5"/>
+    <text x="27" y="341" font-size="17" fill="#48617f">Fixed source</text>
+  </g>
+</svg>

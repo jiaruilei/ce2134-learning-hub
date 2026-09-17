@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 330" role="img" aria-labelledby="forces-title forces-desc">
+  <title id="forces-title">Centroid and centre of pressure on an inclined plane</title>
+  <desc id="forces-desc">Side view of an inclined rectangular plane with its top edge at the free surface. Water is on the left. The centroid C lies halfway down the plane and the centre of pressure CP lies below it. Vertical depths h c and h cp are measured from the free surface. The resultant force F acts through CP, normal to the plane and away from the water. Theta is the inclination measured from the horizontal. A denotes the actual plane area, which extends out of the side view.</desc>
+  <defs>
+    <marker id="forces-force-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#b45309"/>
+    </marker>
+    <marker id="forces-dimension" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 9 1 L 1 5 L 9 9" fill="none" stroke="#48617f" stroke-width="1.7"/>
+    </marker>
+  </defs>
+  <rect width="480" height="330" rx="12" fill="#fff"/>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="19" fill="#233651">
+    <text x="32" y="35">Free surface</text>
+    <text x="445" y="35" text-anchor="end" font-size="17" fill="#48617f">Side view</text>
+    <path d="M 32 65 H 150 L 300 265 H 32 Z" fill="#eff6ff"/>
+    <path d="M 32 65 V 265 H 300" fill="none" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 32 65 H 150" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+    <path d="M 150 65 H 438" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <path d="M 150 65 L 300 265" fill="none" stroke="#48617f" stroke-width="9" stroke-linecap="butt"/>
+    <text x="52" y="142">Water, <tspan font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="22">ρ</tspan></text>
+    <path d="M 190 65 A 40 40 0 0 1 174 97" fill="none" stroke="#48617f" stroke-width="1.8"/>
+    <text x="195" y="101" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="24">θ</text>
+    <path d="M 225 165 H 357 M 250 198.333 H 430" fill="none" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="5 5"/>
+    <path d="M 354 68 V 162 M 426 68 V 195.333" fill="none" stroke="#48617f" stroke-width="1.7" marker-start="url(#forces-dimension)" marker-end="url(#forces-dimension)"/>
+    <rect x="338" y="104" width="33" height="29" rx="4" fill="#fff"/>
+    <rect x="407" y="121" width="42" height="31" rx="4" fill="#fff"/>
+    <text x="354" y="126" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="23">h<tspan font-family="Segoe UI, Arial, sans-serif" font-size="14" font-style="normal" baseline-shift="sub">c</tspan></text>
+    <text x="426" y="143" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="23">h<tspan font-family="Segoe UI, Arial, sans-serif" font-size="14" font-style="normal" baseline-shift="sub">cp</tspan></text>
+    <path d="M 250 198.333 L 330 138.333" fill="none" stroke="#b45309" stroke-width="3.5" marker-end="url(#forces-force-arrow)"/>
+    <path d="M 257.2 207.933 L 266.8 200.733 L 259.6 191.133" fill="none" stroke="#b45309" stroke-width="1.6"/>
+    <text x="297" y="132" fill="#b45309" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="25">F</text>
+    <circle cx="225" cy="165" r="5.5" fill="#2563eb" stroke="#fff" stroke-width="2"/>
+    <circle cx="250" cy="198.333" r="5.5" fill="#b45309" stroke="#fff" stroke-width="2"/>
+    <text x="200" y="160" text-anchor="end" font-weight="600" fill="#2563eb">C</text>
+    <path d="M 203 156 L 219 162" fill="none" stroke="#2563eb" stroke-width="1.3"/>
+    <text x="209" y="222" text-anchor="end" font-weight="600" fill="#b45309">CP</text>
+    <path d="M 214 216 L 244 201" fill="none" stroke="#b45309" stroke-width="1.3"/>
+    <path d="M 278 236 L 312 254 H 321" fill="none" stroke="#48617f" stroke-width="1.4"/>
+    <text x="448" y="261" text-anchor="end">Plane area <tspan font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="22">A</tspan></text>
+    <text x="35" y="308" font-size="18"><tspan font-weight="600" fill="#2563eb">C</tspan><tspan dx="7">Centroid</tspan></text>
+    <text x="208" y="308" font-size="18"><tspan font-weight="600" fill="#b45309">CP</tspan><tspan dx="7">Centre of pressure</tspan></text>
+  </g>
+</svg>

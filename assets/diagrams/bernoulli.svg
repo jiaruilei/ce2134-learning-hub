@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-labelledby="bernoulli-title bernoulli-desc">
+  <title id="bernoulli-title">Pressure, velocity and elevation head in a horizontal contraction</title>
+  <desc id="bernoulli-desc">Steady incompressible ideal flow moves right through a narrowing horizontal pipe. The energy grade line stays level. The hydraulic grade line falls as velocity head increases. At section two, three vertical dimensions show elevation z from the datum to the centreline, pressure head p two over rho g from the centreline to the hydraulic grade line, and velocity head v two squared over two g from the hydraulic to the energy grade line. All head dimensions use the same vertical coordinate.</desc>
+  <defs>
+    <marker id="bernoulli-flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#2563eb"/></marker>
+    <marker id="bernoulli-dimension-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#48617f"/></marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", Arial, sans-serif; font-size: 18px; fill: #233651; }
+    .math { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: 21px; }
+    .sub { font-size: 14px; baseline-shift: sub; }
+    .sup { font-size: 14px; baseline-shift: super; }
+    .dimension { fill: none; stroke: #48617f; stroke-width: 1.5; marker-start: url(#bernoulli-dimension-arrow); marker-end: url(#bernoulli-dimension-arrow); }
+  </style>
+  <rect x="1" y="1" width="478" height="358" rx="16" fill="#eff6ff"/>
+  <text x="24" y="29" fill="#48617f">Horizontal pipe · ideal flow</text>
+
+  <!-- The contraction is drawn with radii 32 and 24. The head gaps have
+       the corresponding velocity-head ratio (32/24)^4. -->
+  <path d="M24 220H174C213 220 237 228 276 228H452V276H276C237 276 213 284 174 284H24Z" fill="#bfdbfe"/>
+  <path d="M24 220H174C213 220 237 228 276 228H452M24 284H174C213 284 237 276 276 276H452" fill="none" stroke="#48617f" stroke-width="3"/>
+  <path d="M24 252H452" stroke="#48617f" stroke-width="1.2" stroke-dasharray="6 6"/>
+  <path d="M24 326H452" stroke="#48617f" stroke-width="1.5"/>
+  <text x="24" y="349" fill="#48617f">Datum</text>
+
+  <path d="M24 62H452" fill="none" stroke="#0f766e" stroke-width="3"/>
+  <text x="334" y="49" style="fill:#0f766e;font-weight:600">EGL</text>
+  <path d="M24 88H174C213 88 237 144.173 276 144.173H452" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <text x="286" y="134" style="fill:#2563eb;font-weight:600">HGL</text>
+
+  <path d="M49 261H94" stroke="#2563eb" stroke-width="3" marker-end="url(#bernoulli-flow-arrow)"/>
+  <text x="66" y="242" class="math">v<tspan class="sub">1</tspan></text>
+  <path d="M287 261H367" stroke="#2563eb" stroke-width="3" marker-end="url(#bernoulli-flow-arrow)"/>
+  <text x="321" y="242" class="math">v<tspan class="sub">2</tspan></text>
+  <text x="48" y="308">Section 1</text>
+  <text x="286" y="308">Section 2</text>
+
+  <path d="M397 62H415M397 144.173H415M397 252H415M397 326H415" stroke="#48617f" stroke-width="1.3"/>
+  <path d="M406 67V139" class="dimension"/>
+  <path d="M406 149V247" class="dimension"/>
+  <path d="M406 257V321" class="dimension"/>
+  <circle cx="406" cy="252" r="3.5" fill="#233651"/>
+
+  <text x="442" y="97" text-anchor="middle" class="math">v<tspan class="sub">2</tspan><tspan class="sup">2</tspan></text>
+  <path d="M423 106H462" stroke="#233651" stroke-width="1.2"/>
+  <text x="442" y="128" text-anchor="middle" class="math">2g</text>
+  <text x="442" y="189" text-anchor="middle" class="math">p<tspan class="sub">2</tspan></text>
+  <path d="M423 198H462" stroke="#233651" stroke-width="1.2"/>
+  <text x="442" y="220" text-anchor="middle" class="math">ρg</text>
+  <text x="434" y="293" class="math">z</text>
+</svg>

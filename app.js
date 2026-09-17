@@ -5,6 +5,7 @@ import {CHAPTER_SET_SIZE,gradeQuestion,makeSet} from './lib/practice.js';
 import {createStore} from './lib/storage.js';
 import {renderEquations,renderMathText as rich} from './lib/math.js';
 import {hasUnfinishedSession,normalizeSessions,topicProgress} from './lib/practice-flow.js';
+import {diagrams,diagramPath,diagramForQuestion} from './content/diagrams.js';
 
 const main=document.querySelector('main');
 let browserStorage;try{browserStorage=window.localStorage;}catch{}
@@ -44,11 +45,21 @@ function home(){
   return `${heading('Topics (Week 1-6)')}
   <div class="topic-grid">${topics.map(topicCard).join('')}</div>`;
 }
+function conceptDiagram(id){
+  const diagram=diagrams[id];
+  if(!diagram)return '';
+  return `<figure class="concept-diagram review-section"><figcaption><h2>${esc(diagram.title)}</h2><button type="button" class="text-button" data-action="diagram" data-topic="${id}" aria-haspopup="dialog" aria-label="Enlarge diagram: ${esc(diagram.title)}">Enlarge</button></figcaption><img src="${diagramPath(id)}" alt="${esc(diagram.alt)}" width="480" height="${diagram.height}" decoding="async"></figure>`;
+}
+function feedbackDiagram(question){
+  const id=diagramForQuestion(question);
+  return id?`<button type="button" class="text-button feedback-diagram-button" data-action="diagram" data-topic="${id}" aria-haspopup="dialog">View chapter diagram</button>`:'';
+}
 function topicPage(t){
   const done=!!store.data.reviewed[t.id];
   const next=topicById(t.connection.nextId);
   return `<a class="back-link" href="#/">← Topics</a><header class="topic-header"><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><nav class="topic-actions" aria-label="Topic actions"><a class="button secondary current" href="#/topic/${t.id}" aria-current="page">Review</a>${launch(t)}<a class="button primary" href="#/practice?topic=${t.id}">${practiceLabel(t.id)}</a></nav></header><div class="topic-layout"><div class="topic-body">
   <details class="review-section review-details"><summary><h2>Learning objectives</h2></summary><ul class="objective-list">${t.objectives.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></details>
+  ${conceptDiagram(t.id)}
   <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${rich(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${rich(q.formula)}</div><p>${rich(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></section></section>
   <details class="review-section review-details"><summary><h2>Common misconceptions</h2></summary><div class="misconceptions">${t.misconceptions.map(m=>`<article><h3>${rich(m.claim)}</h3><p>${rich(m.correction)}</p></article>`).join('')}</div></details>
   <details class="review-section review-details"><summary><h2>Guided activity</h2></summary><h3>${rich(t.guidedActivity.title)}</h3><ol class="steps">${t.guidedActivity.steps.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><div class="reflection"><strong>Pause and explain</strong><p>${rich(t.guidedActivity.reflection)}</p></div></details>
@@ -68,14 +79,14 @@ function questionView(){
   ${q.kind==='choice'?`<fieldset class="answer-options"><legend class="sr-only">Choose your answer</legend>${q.choices.map((choice,i)=>`<label class="answer-option ${String(draft)===String(i)?'chosen':''} ${answer&&i===q.answerIndex?'answer-correct':''}"><input type="radio" name="answer" value="${i}" ${String(draft)===String(i)?'checked':''} ${answer?'disabled':''}><span class="choice-letter">${String.fromCharCode(65+i)}</span><span>${rich(choice)}</span>${answer&&i===q.answerIndex?'<span class="option-check" aria-label="Correct answer">✓</span>':''}</label>`).join('')}</fieldset>`:`<label class="numeric-label" for="numericAnswer">Your answer</label><div class="numeric-answer"><input id="numericAnswer" name="answer" type="number" step="any" inputmode="decimal" placeholder="Enter a value" value="${esc(draft)}" ${answer?'disabled':''} aria-describedby="answerUnits answerError"><span id="answerUnits">${rich(presentUnit(q.unit))}</span></div><p class="small-note">Use the unit shown. Accepted tolerance: ±${rich(presentQuantity(q.tolerance,q.unit))}.</p>`}
   <p id="answerError" class="form-error" role="alert">${esc(formError)}</p>${answer?'':`<div class="answer-actions"><button class="button primary" type="submit">Check my answer →</button><button type="button" class="text-button" data-action="hint">${hintUsed?'Hide hint':'I’d like a hint'}</button></div>`}</form>
   ${hintUsed&&!answer?`<div class="hint"><strong>A starting point</strong><p>${rich(q.hint)}</p></div>`:''}
-  ${answer?`<section class="feedback ${answer.correct?'success':'try-again'}" tabindex="-1" id="feedback"><h2>${answer.correct?'Correct':'Not quite'}</h2>${!answer.correct?`<p>The correct answer is <strong>${q.kind==='choice'?rich(q.choices[q.answerIndex]):rich(presentQuantity(q.answer,q.unit))}</strong>.</p>`:''}<h3>Worked solution</h3><ol>${q.solution.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><div class="takeaway"><strong>Keep this idea</strong><p>${rich(q.takeaway)}</p></div></section><div class="next-row"><button class="button primary" data-action="next">${session.index===session.ids.length-1?'See my summary':'Next question'} →</button></div>`:''}</section>
+  ${answer?`<section class="feedback ${answer.correct?'success':'try-again'}" tabindex="-1" id="feedback"><h2>${answer.correct?'Correct':'Not quite'}</h2>${!answer.correct?`<p>The correct answer is <strong>${q.kind==='choice'?rich(q.choices[q.answerIndex]):rich(presentQuantity(q.answer,q.unit))}</strong>.</p>`:''}<h3>Worked solution</h3><ol>${q.solution.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><div class="takeaway"><strong>Keep this idea</strong><p>${rich(q.takeaway)}</p></div>${feedbackDiagram(q)}</section><div class="next-row"><button class="button primary" data-action="next">${session.index===session.ids.length-1?'See my summary':'Next question'} →</button></div>`:''}</section>
   <aside class="question-side"><div class="side-card"><h2>Review topic</h2>${(q.topic==='mixed'?(q.relatedTopics||q.tags||[]).filter(id=>topicById(id)):[q.topic]).map(id=>`<a href="#/topic/${id}" class="side-link">${esc(topicName(id))} →</a>`).join('')}</div></aside></div>`;
 }
 function resultView(){
   const session=currentSession(),answers=Object.values(session.answers);
   const correct=answers.filter(a=>a.correct).length;
   const missed=session.ids.filter(id=>!session.answers[id]?.correct);
-  return `<section class="result-hero"><h1>Session complete</h1><div class="result-score"><strong>${correct}</strong><span>/ ${session.ids.length}<small>questions correct</small></span></div><div class="button-row">${missed.length?'<button class="button primary" data-action="retry-session">Retry these questions →</button>':''}<button class="button ${missed.length?'secondary':'primary'}" data-action="leave">Back to topic</button></div></section><section class="section-block"><div class="section-heading"><h2>Answers &amp; solutions</h2><a class="quiet-link" href="#/">All topics →</a></div><div class="question-trail">${session.ids.map((id,i)=>{const q=presentQuestion(questions.find(x=>x.id===id)),a=session.answers[id];return `<details><summary><span class="trail-result ${a.correct?'is-correct':'is-incorrect'}" aria-label="${a.correct?'Correct':'Incorrect'}">${a.correct?'✓':'↻'}</span><span><small>${i+1} · ${esc(topicName(q.topic))}</small>${rich(q.prompt)}</span><span class="trail-expand" aria-hidden="true">+</span></summary><div><ol>${q.solution.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><p>${rich(q.takeaway)}</p></div></details>`;}).join('')}</div></section>`;
+  return `<section class="result-hero"><h1>Session complete</h1><div class="result-score"><strong>${correct}</strong><span>/ ${session.ids.length}<small>questions correct</small></span></div><div class="button-row">${missed.length?'<button class="button primary" data-action="retry-session">Retry these questions →</button>':''}<button class="button ${missed.length?'secondary':'primary'}" data-action="leave">Back to topic</button></div></section><section class="section-block"><div class="section-heading"><h2>Answers &amp; solutions</h2><a class="quiet-link" href="#/">All topics →</a></div><div class="question-trail">${session.ids.map((id,i)=>{const q=presentQuestion(questions.find(x=>x.id===id)),a=session.answers[id];return `<details><summary><span class="trail-result ${a.correct?'is-correct':'is-incorrect'}" aria-label="${a.correct?'Correct':'Incorrect'}">${a.correct?'✓':'↻'}</span><span><small>${i+1} · ${esc(topicName(q.topic))}</small>${rich(q.prompt)}</span><span class="trail-expand" aria-hidden="true">+</span></summary><div><ol>${q.solution.map(s=>`<li>${rich(s)}</li>`).join('')}</ol><p>${rich(q.takeaway)}</p>${feedbackDiagram(q)}</div></details>`;}).join('')}</div></section>`;
 }
 function render(){
   const hash=location.hash.slice(1)||'/';
@@ -110,6 +121,7 @@ function startChapter(topic,replaceRoute=false){
   begin(makeSet(questions,{mode:'topic',topic,count:CHAPTER_SET_SIZE,attempts:store.data.attempts}),'topic',replaceRoute);
 }
 function onRoute(){
+  document.getElementById('diagramDialog').close();
   runVisible=false;activeTopic=null;formError='';
   const [path,search='']=location.hash.slice(1).split('?');
   const params=new URLSearchParams(search);
@@ -129,6 +141,16 @@ function onRoute(){
 main.addEventListener('click',event=>{
   const button=event.target.closest('[data-action]');if(!button)return;
   const action=button.dataset.action;
+  if(action==='diagram'){
+    const id=button.dataset.topic,diagram=diagrams[id];if(!diagram)return;
+    const dialog=document.getElementById('diagramDialog'),image=dialog.querySelector('img');
+    document.getElementById('diagramTitle').textContent=diagram.title;
+    image.src=diagramPath(id);image.alt=diagram.alt;
+    const viewer=dialog.querySelector('.diagram-viewer');
+    dialog.showModal();
+    viewer.scrollLeft=0;viewer.scrollTop=0;
+    return;
+  }
   if(action==='review'){const id=button.dataset.topic;if(store.data.reviewed[id])delete store.data.reviewed[id];else store.data.reviewed[id]=new Date().toISOString();store.save();render();toast(store.data.reviewed[id]?'Topic marked reviewed.':'Review mark removed.');}
   if(action==='leave')location.hash=activeTopic?`#/topic/${activeTopic}`:'#/';
   if(action==='hint'){const s=currentSession(),id=s.ids[s.index];s.hints[id]=!s.hints[id];s.hintEverUsed??={};s.hintEverUsed[id]=true;store.save();render();}

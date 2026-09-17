@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-labelledby="pressure-title pressure-desc">
+  <title id="pressure-title">Vertical depth in a still-water tank</title>
+  <desc id="pressure-desc">An open tank contains water of density rho. The free surface is exposed to atmospheric pressure. Point P is a vertical distance h below the free surface. Rightward pressure arrows on the tank wall increase in length with depth.</desc>
+  <defs>
+    <marker id="pressure-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="pressure-dimension" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 9 1 L 1 5 L 9 9" fill="none" stroke="#48617f" stroke-width="1.7"/>
+    </marker>
+  </defs>
+  <rect width="480" height="300" rx="12" fill="#fff"/>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="19" fill="#233651">
+    <text x="68" y="30">Open to atmosphere</text>
+    <text x="226" y="61" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="22">p<tspan font-family="Segoe UI, Arial, sans-serif" font-size="14" font-style="normal" baseline-shift="sub">atm</tspan></text>
+    <path d="M 68 80 H 352 V 264 H 68 Z" fill="#eff6ff"/>
+    <path d="M 68 51 V 264 H 352 V 51" fill="none" stroke="#48617f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 70 80 H 350" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+    <text x="89" y="70" font-size="18" fill="#48617f">Free surface</text>
+    <text x="103" y="136">Water, <tspan font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="22">ρ</tspan></text>
+    <g stroke="#2563eb" stroke-width="2.5" marker-end="url(#pressure-arrow)">
+      <path d="M 337.4 109 H 349"/>
+      <path d="M 315 165 H 349"/>
+      <path d="M 284.6 241 H 349"/>
+    </g>
+    <path d="M 226 208 H 415 M 355 80 H 415" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <path d="M 403 83 V 205" fill="none" stroke="#48617f" stroke-width="1.7" marker-start="url(#pressure-dimension)" marker-end="url(#pressure-dimension)"/>
+    <rect x="391" y="130" width="25" height="28" rx="4" fill="#fff"/>
+    <text x="403" y="151" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="24">h</text>
+    <circle cx="226" cy="208" r="5.5" fill="#2563eb" stroke="#fff" stroke-width="2"/>
+    <text x="211" y="194" font-family="Georgia, Times New Roman, serif" font-style="italic" font-size="23">P</text>
+  </g>
+</svg>
