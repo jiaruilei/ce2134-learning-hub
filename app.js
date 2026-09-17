@@ -41,7 +41,7 @@ function topicCard(t){
   return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-practice-progress"><div class="topic-progress-label"><span>Practice progress</span><span>${progress.checked} / ${total}</span></div><progress max="${total}" value="${progress.checked}" aria-label="${esc(t.title)} practice progress: ${progress.checked} of ${total} questions checked"></progress></div><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review</a><a class="card-practise" href="#/practice?topic=${t.id}" aria-label="${label}: ${esc(t.title)}">${label}</a><a class="platform-link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" title="Opens in a new tab" aria-label="Interactive platform for ${esc(t.title)} (opens in a new tab)">Interactive platform</a></div></article>`;
 }
 function home(){
-  return `${heading('Topics')}
+  return `${heading('Topics (Week 1-6)')}
   <div class="topic-grid">${topics.map(topicCard).join('')}</div>`;
 }
 function topicPage(t){
@@ -81,7 +81,7 @@ function render(){
   const hash=location.hash.slice(1)||'/';
   const [path]=hash.split('?');
   const page=path.split('/')[1]||'home';
-  const labels={home:'Topics',topic:'Topic review',practice:activeTopic?topicName(activeTopic)+' practice':'Topics'};
+  const labels={home:'Topics (Week 1-6)',topic:'Topic review',practice:activeTopic?topicName(activeTopic)+' practice':'Topics (Week 1-6)'};
   document.getElementById('pageLabel').textContent=labels[page]||'Topics';
   let html;
   if(page==='home')html=home();
