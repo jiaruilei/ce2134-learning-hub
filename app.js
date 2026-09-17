@@ -1,23 +1,25 @@
 import {topics} from './content/topics.js';
 import {questions} from './content/questions.js';
-import {gradeQuestion,makeSet,latestMissed,topicStats,validSession} from './lib/practice.js';
+import {gradeQuestion,makeSet,latestMissed,topicStats} from './lib/practice.js';
 import {createStore} from './lib/storage.js';
 import {renderEquations} from './lib/math.js';
-import {hasUnfinishedSession,topicPracticeAction} from './lib/practice-flow.js';
+import {hasUnfinishedSession,normalizeSessions,topicProgress} from './lib/practice-flow.js';
 
 const main=document.querySelector('main');
 let browserStorage;try{browserStorage=window.localStorage;}catch{}
 const store=createStore(browserStorage);
-store.data.session=validSession(store.data.session,questions);
+const migratedTopic=normalizeSessions(store.data,questions);
 const knownQuestions=new Set(questions.map(q=>q.id));
 store.data.attempts=store.data.attempts.filter(a=>knownQuestions.has(a.questionId));
+store.save();
 const builder={mode:'mixed',topic:'pressure',count:6};
-let runVisible=false,customVisible=false,pendingSet=null,formError='',toastTimer;
+let runVisible=false,customVisible=false,pendingSet=null,activeTopic=null,formError='',toastTimer;
 const drafts={};
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const topicById=id=>topics.find(t=>t.id===id);
 const topicName=id=>topicById(id)?.title||'Connecting concepts';
-const percent=n=>`${n}%`;
+const currentSession=()=>activeTopic?store.data.topicSessions[activeTopic]:store.data.session;
+const practiceLabel=id=>hasUnfinishedSession(store.data.topicSessions[id])?'Resume practice':store.data.topicSessions[id]?.finished?'Practice again':'Practice';
 const reviewed=()=>topics.filter(t=>store.data.reviewed[t.id]);
 const fmt=n=>Number.isInteger(n)?String(n):String(Number(n.toPrecision(7)));
 
@@ -35,17 +37,19 @@ function icon(id){
 function heading(title,extra=''){return `<div class="page-heading"><h1>${title}</h1>${extra}</div>`;}
 function launch(t,label='Interactive platform'){return `<a class="button secondary" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">${label}<span class="sr-only"> (opens in a new tab)</span></a>`;}
 function topicCard(t){
-  const stats=topicStats(store.data.attempts,t.id);
-  return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span><span>${stats.count?`${stats.accuracy}% · ${stats.count} attempts`:''}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review</a><a class="card-practise" href="#/practice?topic=${t.id}" aria-label="Practise ${esc(t.title)}">Practise</a><a class="platform-link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" title="Opens in a new tab" aria-label="Interactive platform for ${esc(t.title)} (opens in a new tab)">Interactive platform</a></div></article>`;
+  const progress=topicProgress(store.data.topicSessions[t.id]);
+  const total=progress.total||questions.filter(q=>q.topic===t.id).length;
+  const label=practiceLabel(t.id);
+  return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-practice-progress"><div class="topic-progress-label"><span>Practice progress</span><span>${progress.checked} / ${total}</span></div><progress max="${total}" value="${progress.checked}" aria-label="${esc(t.title)} practice progress: ${progress.checked} of ${total} questions checked"></progress></div><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review</a><a class="card-practise" href="#/practice?topic=${t.id}" aria-label="${label}: ${esc(t.title)}">${label}</a><a class="platform-link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" title="Opens in a new tab" aria-label="Interactive platform for ${esc(t.title)} (opens in a new tab)">Interactive platform</a></div></article>`;
 }
 function home(){
-  return `${heading('Topics',hasUnfinishedSession(store.data.session)?'<a class="button primary" href="#/practice?run=1">Resume practice →</a>':'<a class="button primary" href="#/practice">Start practice →</a>')}
+  return `${heading('Topics')}
   <div class="topic-grid">${topics.map(topicCard).join('')}</div>`;
 }
 function topicPage(t){
   const done=!!store.data.reviewed[t.id];
   const next=topicById(t.connection.nextId);
-  return `<a class="back-link" href="#/">← Topics</a><header class="topic-header"><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><nav class="topic-actions" aria-label="Topic actions"><a class="button secondary current" href="#/topic/${t.id}" aria-current="page">Review</a>${launch(t)}<a class="button primary" href="#/practice?topic=${t.id}">Practise</a></nav></header><div class="topic-layout"><div class="topic-body">
+  return `<a class="back-link" href="#/">← Topics</a><header class="topic-header"><div class="topic-title" style="--topic-color:${esc(t.color)}"><span class="topic-icon large">${icon(t.id)}</span>${heading(esc(t.title))}</div><nav class="topic-actions" aria-label="Topic actions"><a class="button secondary current" href="#/topic/${t.id}" aria-current="page">Review</a>${launch(t)}<a class="button primary" href="#/practice?topic=${t.id}">${practiceLabel(t.id)}</a></nav></header><div class="topic-layout"><div class="topic-body">
   <details class="review-section review-details"><summary><h2>Learning objectives</h2></summary><ul class="objective-list">${t.objectives.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>
   <section class="review-section"><h2>Key equations</h2><div class="equation-list">${t.equations.map(q=>`<article class="equation"><span>${esc(q.label)}</span><div class="equation-formula" ${q.tex?`data-tex="${esc(q.tex)}"`:''}>${esc(q.formula)}</div><p>${esc(q.note)}</p></article>`).join('')}</div><section class="assumptions"><h2>Assumptions</h2><ul>${t.assumptions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section></section>
   <details class="review-section review-details"><summary><h2>Common misconceptions</h2></summary><div class="misconceptions">${t.misconceptions.map(m=>`<article><h3>${esc(m.claim)}</h3><p>${esc(m.correction)}</p></article>`).join('')}</div></details>
@@ -76,11 +80,11 @@ function practiceBuilder(){
   <div class="builder-controls">${builder.mode==='topic'?`<label>Topic<select id="practiceTopic">${topics.map(t=>`<option value="${t.id}" ${t.id===builder.topic?'selected':''}>${esc(t.title)}</option>`).join('')}</select></label>`:''}<label>Set length<select id="practiceCount"><option value="6" ${builder.count===6?'selected':''}>${builder.mode==='retry'?'Up to ':''}6 questions</option>${builder.mode==='mixed'||builder.mode==='retry'&&missed>6?`<option value="12" ${builder.count===12?'selected':''}>${builder.mode==='retry'?'Up to ':''}12 questions</option>`:''}</select></label></div><button class="button ${hasUnfinishedSession(store.data.session)?'secondary':'primary'}" data-action="start" ${builder.mode==='retry'&&!missed?'disabled':''}>Start practice <span aria-hidden="true">→</span></button></section></div><p class="small-note">Progress stays in this browser; platform activity and instructor records are separate.</p>`;
 }
 function questionView(){
-  const session=store.data.session;
+  const session=currentSession();
   if(!session)return practiceHome();
   if(session.finished)return resultView();
   const q=questions.find(item=>item.id===session.ids[session.index]);
-  const answer=session.answers[q.id],draft=answer?.value??drafts[q.id]??'';
+  const answer=session.answers[q.id],draft=answer?.value??drafts[`${session.id}:${q.id}`]??'';
   const hintUsed=!!session.hints[q.id];
   return `<div class="practice-top"><button class="text-button" data-action="leave">← Save & leave</button><span>${session.index+1} / ${session.ids.length} questions</span></div><div class="question-progress" aria-label="${Object.keys(session.answers).length} of ${session.ids.length} questions checked">${session.ids.map((id,i)=>`<span class="${session.answers[id]?(session.answers[id].correct?'correct':'incorrect'):i===session.index?'current':''}"></span>`).join('')}</div>
   <div class="question-layout"><section class="question-card"><div class="question-tags"><span class="topic-pill">${esc(topicName(q.topic))}</span><span>${esc(q.difficulty)}</span></div><h1>${esc(q.prompt)}</h1>${q.given?`<p class="givens">${esc(q.given)}</p>`:''}<form id="answerForm" novalidate>
@@ -91,16 +95,16 @@ function questionView(){
   <aside class="question-side"><div class="side-card"><h2>Review topic</h2>${(q.topic==='mixed'?(q.relatedTopics||q.tags||[]).filter(id=>topicById(id)):[q.topic]).map(id=>`<a href="#/topic/${id}" class="side-link">${esc(topicName(id))} →</a>`).join('')}</div></aside></div>`;
 }
 function resultView(){
-  const session=store.data.session,answers=Object.values(session.answers);
+  const session=currentSession(),answers=Object.values(session.answers);
   const correct=answers.filter(a=>a.correct).length;
   const missed=session.ids.filter(id=>!session.answers[id]?.correct);
-  return `<section class="result-hero"><h1>Session complete</h1><div class="result-score"><strong>${correct}</strong><span>/ ${session.ids.length}<small>questions correct</small></span></div><div class="button-row">${missed.length?'<button class="button primary" data-action="retry-session">Retry these questions →</button>':'<a class="button primary" href="#/practice?mode=connect">Connect concepts →</a>'}<button class="button secondary" data-action="leave">Choose a new set</button></div></section><section class="section-block"><div class="section-heading"><h2>Answers &amp; solutions</h2><a class="quiet-link" href="#/progress">My progress →</a></div><div class="question-trail">${session.ids.map((id,i)=>{const q=questions.find(x=>x.id===id),a=session.answers[id];return `<details><summary><span class="trail-result ${a.correct?'is-correct':'is-incorrect'}" aria-label="${a.correct?'Correct':'Incorrect'}">${a.correct?'✓':'↻'}</span><span><small>${i+1} · ${esc(topicName(q.topic))}</small>${esc(q.prompt)}</span><span class="trail-expand" aria-hidden="true">+</span></summary><div><ol>${q.solution.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><p>${esc(q.takeaway)}</p></div></details>`;}).join('')}</div></section>`;
+  return `<section class="result-hero"><h1>Session complete</h1><div class="result-score"><strong>${correct}</strong><span>/ ${session.ids.length}<small>questions correct</small></span></div><div class="button-row">${missed.length?'<button class="button primary" data-action="retry-session">Retry these questions →</button>':'<a class="button primary" href="#/practice?mode=connect">Connect concepts →</a>'}<button class="button secondary" data-action="leave">${activeTopic?'Back to topic':'Choose a new set'}</button></div></section><section class="section-block"><div class="section-heading"><h2>Answers &amp; solutions</h2><a class="quiet-link" href="#/progress">My progress →</a></div><div class="question-trail">${session.ids.map((id,i)=>{const q=questions.find(x=>x.id===id),a=session.answers[id];return `<details><summary><span class="trail-result ${a.correct?'is-correct':'is-incorrect'}" aria-label="${a.correct?'Correct':'Incorrect'}">${a.correct?'✓':'↻'}</span><span><small>${i+1} · ${esc(topicName(q.topic))}</small>${esc(q.prompt)}</span><span class="trail-expand" aria-hidden="true">+</span></summary><div><ol>${q.solution.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><p>${esc(q.takeaway)}</p></div></details>`;}).join('')}</div></section>`;
 }
 function progressPage(){
   const attempts=store.data.attempts,correct=attempts.filter(a=>a.correct).length,missed=latestMissed(attempts);
   return `${heading('My progress')}<div class="progress-summary"><div><strong>${reviewed().length}<span> / 6</span></strong><p>Topics reviewed</p></div><div><strong>${attempts.length}</strong><p>Attempts</p></div><div><strong>${attempts.length?`${Math.round(correct/attempts.length*100)}%`:'—'}</strong><p>Accuracy</p></div></div>
-  ${!attempts.length?`<div class="empty-state"><p>No practice attempts yet.</p><a class="button primary" href="#/practice">Start practice →</a></div>`:''}<section class="section-block"><div class="section-heading"><h2>By topic</h2>${missed.length?`<a class="quiet-link" href="#/practice?mode=retry">Retry ${missed.length} missed questions →</a>`:''}</div><div class="progress-topics">${topics.map(t=>{const s=topicStats(attempts,t.id);return `<article><span class="topic-icon" style="--topic-color:${esc(t.color)}">${icon(t.id)}</span><div class="progress-topic-name"><a href="#/topic/${t.id}">${esc(t.title)}</a><small>${store.data.reviewed[t.id]?'✓ Reviewed':'Not reviewed'}</small></div><div class="topic-score"><strong>${s.count?`${s.accuracy}%`:'—'}</strong><small>${s.count} attempt${s.count===1?'':'s'}</small></div><a class="button secondary compact" href="#/practice?topic=${t.id}">Practise <span class="sr-only">${esc(t.title)}</span> →</a></article>`;}).join('')}</div></section>
-  <section class="data-note"><p>Progress stays in this browser and is not sent to your instructor or synced across devices. Activity in the separate interactive platforms is not included.</p><button class="button secondary" data-action="export-progress">Download my record ↓</button></section>${attempts.length?`<details class="clear-progress"><summary>Manage record</summary><p>Clearing removes your attempts, review checklist, and saved session.</p><button class="text-button danger" data-action="clear-progress">Clear this browser’s record</button></details>`:''}`;
+  ${!attempts.length?`<div class="empty-state"><p>No practice attempts yet.</p><a class="button primary" href="#/practice">Start practice →</a></div>`:''}<section class="section-block"><div class="section-heading"><h2>By topic</h2>${missed.length?`<a class="quiet-link" href="#/practice?mode=retry">Retry ${missed.length} missed questions →</a>`:''}</div><div class="progress-topics">${topics.map(t=>{const s=topicStats(attempts,t.id);return `<article><span class="topic-icon" style="--topic-color:${esc(t.color)}">${icon(t.id)}</span><div class="progress-topic-name"><a href="#/topic/${t.id}">${esc(t.title)}</a><small>${store.data.reviewed[t.id]?'✓ Reviewed':'Not reviewed'}</small></div><div class="topic-score"><strong>${s.count?`${s.accuracy}%`:'—'}</strong><small>${s.count} attempt${s.count===1?'':'s'}</small></div><a class="button secondary compact" href="#/practice?topic=${t.id}">${practiceLabel(t.id)} <span class="sr-only">${esc(t.title)}</span></a></article>`;}).join('')}</div></section>
+  <section class="data-note"><p>Progress stays in this browser and is not sent to your instructor or synced across devices. Activity in the separate interactive platforms is not included.</p><button class="button secondary" data-action="export-progress">Download my record ↓</button></section>${attempts.length?`<details class="clear-progress"><summary>Manage record</summary><p>Clearing removes your attempts, review checklist, and all saved sessions.</p><button class="text-button danger" data-action="clear-progress">Clear this browser’s record</button></details>`:''}`;
 }
 
 function render(){
@@ -124,15 +128,24 @@ function render(){
 }
 function toast(text){clearTimeout(toastTimer);const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');toastTimer=setTimeout(()=>el.classList.remove('show'),3000);}
 function showSession(replaceRoute=false){
-  if(replaceRoute||location.hash!=='#/practice?run=1')history[replaceRoute?'replaceState':'pushState'](null,'','#/practice?run=1');
+  const route=`#/practice?run=1${activeTopic?`&topic=${activeTopic}`:''}`;
+  if(replaceRoute||location.hash!==route)history[replaceRoute?'replaceState':'pushState'](null,'',route);
   pendingSet=null;runVisible=true;formError='';render();window.scrollTo({top:0});main.focus({preventScroll:true});
 }
-function begin(ids,mode,replaceRoute=false){
+function begin(ids,mode,replaceRoute=false,topic=null){
   if(!ids.length){toast('Complete some practice before retrying mistakes.');return;}
-  for(const id of Object.keys(drafts))delete drafts[id];
-  store.data.session={id:crypto.randomUUID(),ids,index:0,answers:{},hints:{},mode,finished:false};store.save();showSession(replaceRoute);
+  activeTopic=topic;
+  const session={id:crypto.randomUUID(),ids,index:0,answers:{},hints:{},mode,finished:false};
+  if(topic)store.data.topicSessions[topic]=session;else store.data.session=session;
+  store.save();showSession(replaceRoute);
 }
 function requestSet(options,replaceRoute=false){
+  if(options.mode==='topic'&&topicById(options.topic)){
+    activeTopic=options.topic;
+    if(hasUnfinishedSession(currentSession())){showSession(replaceRoute);return;}
+    begin(makeSet(questions,options),'topic',replaceRoute,options.topic);return;
+  }
+  activeTopic=null;
   const ids=makeSet(questions,{...options,attempts:store.data.attempts});
   if(!ids.length){toast('Complete some practice before retrying mistakes.');return;}
   if(!hasUnfinishedSession(store.data.session)){begin(ids,options.mode,replaceRoute);return;}
@@ -142,7 +155,7 @@ function requestSet(options,replaceRoute=false){
   runVisible=false;formError='';render();window.scrollTo({top:0});main.focus({preventScroll:true});
 }
 function onRoute(){
-  runVisible=false;customVisible=false;pendingSet=null;formError='';
+  runVisible=false;customVisible=false;pendingSet=null;activeTopic=null;formError='';
   if(location.hash.split('?')[0]==='#/topics')history.replaceState(null,'','#/');
   const [path,search='']=location.hash.slice(1).split('?');
   const params=new URLSearchParams(search);
@@ -152,12 +165,14 @@ function onRoute(){
     if(topicById(topic)){builder.mode='topic';builder.topic=topic;builder.count=6;}
     else if(['mixed','connect','retry'].includes(mode)){builder.mode=mode;builder.count=6;}
     if(params.get('run')==='1'){
-      if(store.data.session)runVisible=true;
+      activeTopic=topicById(topic)?topic:!topic&&!store.data.session?migratedTopic:null;
+      if(currentSession()){
+        if(activeTopic&&!topic){showSession(true);return;}
+        runVisible=true;
+      }
       else history.replaceState(null,'','#/practice');
     }else if(topicById(topic)&&!customVisible){
-      const action=topicPracticeAction(store.data.session,topic,questions);
-      if(action==='resume'){showSession(true);return;}
-      if(action==='start'||action==='choose'){requestSet({mode:'topic',topic,count:6},true);return;}
+      requestSet({mode:'topic',topic,count:6},true);return;
     }
   }
   render();window.scrollTo({top:0});main.focus({preventScroll:true});
@@ -170,24 +185,24 @@ main.addEventListener('click',event=>{
   if(action==='start')requestSet({...builder});
   if(action==='quick-start')requestSet({mode:'mixed',count:6});
   if(action==='replace-session'&&pendingSet){const selected=pendingSet;begin(selected.ids,selected.mode,selected.replaceRoute);}
-  if(action==='leave')location.hash='#/practice';
-  if(action==='hint'){const s=store.data.session,id=s.ids[s.index];s.hints[id]=!s.hints[id];s.hintEverUsed??={};s.hintEverUsed[id]=true;store.save();render();}
-  if(action==='next'){const s=store.data.session;if(!s.answers[s.ids[s.index]])return;if(s.index===s.ids.length-1)s.finished=true;else s.index++;store.save();formError='';render();main.focus();window.scrollTo({top:0});}
-  if(action==='retry-session'){const s=store.data.session;begin(s.ids.filter(id=>!s.answers[id]?.correct),'retry');}
+  if(action==='leave')location.hash=activeTopic?`#/topic/${activeTopic}`:'#/practice';
+  if(action==='hint'){const s=currentSession(),id=s.ids[s.index];s.hints[id]=!s.hints[id];s.hintEverUsed??={};s.hintEverUsed[id]=true;store.save();render();}
+  if(action==='next'){const s=currentSession();if(!s.answers[s.ids[s.index]])return;if(s.index===s.ids.length-1)s.finished=true;else s.index++;store.save();formError='';render();main.focus();window.scrollTo({top:0});}
+  if(action==='retry-session'){const s=currentSession();begin(s.ids.filter(id=>!s.answers[id]?.correct),'retry',false,activeTopic);}
   if(action==='export-progress'){
-    const data={...store.data,session:null,exportedAt:new Date().toISOString(),note:'Hub practice in this browser only; no external platform activity.'};
+    const data={...store.data,session:null,topicSessions:{},exportedAt:new Date().toISOString(),note:'Hub practice in this browser only; no external platform activity.'};
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`ce2134-progress-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
-  if(action==='clear-progress'&&window.confirm('Clear this browser’s hub practice, review checklist, and saved session? Download your record first if you want to keep a copy.')){store.clear();render();toast('This browser’s hub record has been cleared.');}
+  if(action==='clear-progress'&&window.confirm('Clear this browser’s hub practice, review checklist, and all saved sessions? Download your record first if you want to keep a copy.')){store.clear();render();toast('This browser’s hub record has been cleared.');}
 });
 main.addEventListener('change',event=>{
   if(event.target.id==='practiceTopic')builder.topic=event.target.value;
   if(event.target.id==='practiceCount')builder.count=Number(event.target.value);
-  if(event.target.name==='answer'&&store.data.session){const id=store.data.session.ids[store.data.session.index];drafts[id]=event.target.value;main.querySelectorAll('.answer-option').forEach(label=>label.classList.toggle('chosen',label.querySelector('input').checked));}
+  if(event.target.name==='answer'&&currentSession()){const s=currentSession(),id=s.ids[s.index];drafts[`${s.id}:${id}`]=event.target.value;main.querySelectorAll('.answer-option').forEach(label=>label.classList.toggle('chosen',label.querySelector('input').checked));}
 });
-main.addEventListener('input',event=>{if(event.target.name==='answer'&&store.data.session)drafts[store.data.session.ids[store.data.session.index]]=event.target.value;});
+main.addEventListener('input',event=>{if(event.target.name==='answer'&&currentSession()){const s=currentSession();drafts[`${s.id}:${s.ids[s.index]}`]=event.target.value;}});
 main.addEventListener('submit',event=>{
-  if(event.target.id!=='answerForm')return;event.preventDefault();const s=store.data.session,id=s.ids[s.index];if(s.answers[id])return;
+  if(event.target.id!=='answerForm')return;event.preventDefault();const s=currentSession(),id=s.ids[s.index];if(s.answers[id])return;
   const q=questions.find(item=>item.id===id);const value=new FormData(event.target).get('answer');const grade=gradeQuestion(q,value);
   if(!grade.valid){formError=grade.message;document.getElementById('answerError').textContent=formError;return;}
   const answer={value:grade.value,correct:grade.correct,hintUsed:!!(s.hintEverUsed?.[id]||s.hints[id])};s.answers[id]=answer;

@@ -27,11 +27,12 @@ test('matching topic practice resumes the existing set, including final checked 
   assert.equal(topicPracticeAction(checked,'pressure',bank),'resume');
 });
 
-test('different topics and mixed or retry sessions require an explicit choice',()=>{
+test('different topics and general practice sessions require an explicit choice',()=>{
   assert.equal(topicPracticeAction(session(),'forces',bank),'choose');
   assert.equal(topicPracticeAction(session({ids:['pressure-01','forces-01']}),'pressure',bank),'choose');
   assert.equal(topicPracticeAction(session({mode:'mixed'}),'pressure',bank),'choose');
-  assert.equal(topicPracticeAction(session({mode:'retry'}),'pressure',bank),'choose');
+  assert.equal(topicPracticeAction(session({mode:'retry'}),'pressure',bank),'resume');
+  assert.equal(topicPracticeAction(session({mode:'retry',ids:['pressure-01','forces-01']}),'pressure',bank),'choose');
   assert.equal(topicPracticeAction(session({mode:'connect',ids:['connect-01']}),'pressure',bank),'choose');
 });
 

@@ -172,7 +172,7 @@ test('browser storage round-trips review state, attempts, and a resumable sessio
   assert.deepEqual(reopened.data, first.data);
   assert.ok(validSession(reopened.data.session, questions));
   reopened.clear();
-  assert.deepEqual(reopened.data, {version: 1, reviewed: {}, attempts: [], session: null});
+  assert.deepEqual(reopened.data, {version: 2, reviewed: {}, attempts: [], session: null, topicSessions: {}});
   assert.deepEqual(createStore(storage).data, reopened.data);
 });
 
@@ -199,14 +199,14 @@ test('a write failure preserves previously saved data instead of replacing it wi
   const previous = {version: 1, reviewed: {forces: true}, attempts: [attempt('forces-01', true)], session: null};
   const store = createStore({getItem: () => JSON.stringify(previous), setItem() { throw new Error('Quota exceeded'); }});
   assert.equal(store.available, false);
-  assert.deepEqual(store.data, previous);
+  assert.deepEqual(store.data, {...previous, version: 2, topicSessions: {}});
 });
 
 test('corrupt JSON and unsupported versions recover safely; malformed attempt records are discarded', () => {
   for (const initial of ['not JSON', '{broken', JSON.stringify({version: 999, attempts: [attempt('pressure-01', true)]})]) {
     const storage = memoryStorage(initial);
     const store = createStore(storage);
-    assert.deepEqual(store.data, {version: 1, reviewed: {}, attempts: [], session: null});
+    assert.deepEqual(store.data, {version: 2, reviewed: {}, attempts: [], session: null, topicSessions: {}});
     assert.doesNotThrow(() => store.save());
     assert.equal(store.available, true);
     assert.deepEqual(JSON.parse(storage.serialized), store.data);

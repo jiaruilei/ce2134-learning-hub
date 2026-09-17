@@ -20,9 +20,10 @@ These are external lab launches, not embedded or copied applications. The hub do
 ## Review and practice
 
 - One Topics homepage links to all six modules; summary statistics live in Progress. Older `#/topics` bookmarks redirect to the homepage.
-- Each topic places Review, Interactive platform and Practise beside its title, wrapping below it on small screens.
-- Topic Practise links start six questions immediately, or resume the unfinished set for that topic. A different unfinished set stays intact until the student explicitly chooses to replace it; checked answers remain in Progress.
-- Practice prioritises Resume for unfinished sessions, with custom modes and set lengths on a separate Custom settings page. Active practice has a stable route so refreshing preserves its question order and progress.
+- Each light-blue topic card has a practice progress bar and its own Practice / Resume practice button. The bar counts checked questions in that chapter's saved set, not correct answers. Completed sets offer Practice again.
+- Each chapter saves its own question order, checked answers, hints and place. Starting or resuming another chapter preserves all other chapter sessions. The Topics homepage has no shared practice button.
+- Topic pages also offer Review, Interactive platform and the chapter's current practice action, wrapping on small screens.
+- Mixed revision, connecting concepts and general retries remain available under Practice, with custom settings separately. Their shared session is independent of the six chapter sessions. Active practice URLs identify the chapter so refreshing or using browser history restores the right set.
 - Six review modules with suggested foundations and connections between concepts.
 - **42 fixed, editable questions:** six per topic, plus six questions connecting multiple topics; 19 numerical and 23 multiple-choice questions.
 - Topic practice, mixed revision, connecting problems and retries of questions most recently answered incorrectly.
@@ -52,7 +53,7 @@ Use the web server rather than opening `index.html` directly as a local file: th
 
 ## Progress and privacy
 
-The hub does not ask for a name, student number, email address or login. Its review marks, checked answers and saved practice session are stored in this browser's `localStorage`, under `ce2134-learning-hub.v1`.
+The hub does not ask for a name, student number, email address or login. Its review marks, checked answers and saved practice sessions are stored in this browser's `localStorage`, under `ce2134-learning-hub.v1`. Existing single-topic sessions migrate into the corresponding chapter without removing earlier attempts or review marks.
 
 - Progress is local to the browser and website origin. It does not follow a student to another browser or device; local preview and a deployed site have separate records.
 - Hub practice is not sent to an instructor dashboard or a reporting service and is not synchronised with the external labs.
