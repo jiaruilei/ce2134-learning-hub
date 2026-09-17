@@ -92,19 +92,25 @@ Check the learning sequence, notation, difficulty, answer keys and worked reason
 - Open all six lab links and confirm the guided steps still match the available controls.
 - Check keyboard use, narrow-screen layouts and a full practice session before sharing the hub with students.
 
-## Render static hosting after review
+## Render static hosting
 
-The hub is prepared for instructor review. **No Render deployment of this hub has been performed as part of this build.** The external platforms listed above already have their own hosting.
+The hub is live at [ce2134-learning-hub.onrender.com](https://ce2134-learning-hub.onrender.com/). Manage releases in the [Render dashboard](https://dashboard.render.com/static/srv-dalqvhu5vjqs738c9oa0).
 
-After the instructor approves the hub for release, connect this repository as a **Render Static Site** with:
+It uses a **Render Static Site** with the following release settings:
 
 | Setting | Value |
 | --- | --- |
+| Source branch | `main` |
 | Root directory | Repository root |
 | Build command | `npm ci && npm run build` |
 | Publish directory | `dist` |
-| Runtime/build requirement | Node.js 18 or later |
-| Environment variables | None required by the hub |
+| Node.js version | `NODE_VERSION=24.14.1` |
+| Dependency installation | `SKIP_INSTALL_DEPS=true` — the build command runs `npm ci` |
+| Auto-deploy | Disabled |
+
+The hub uses free static hosting and needs no database or application secrets. Its environment variables configure the build only.
+
+Review changes in the local preview, run `npm test` and `npm run build`, then publish the approved revision to `main`. Deploy it manually from the Render dashboard. Pushing a commit alone does not update the public site.
 
 Navigation uses hash routes such as `#/topic/pressure`, so the application does not require a server-side route rewrite. `scripts/serve.mjs` is a local preview helper; production serves the generated static files.
 
