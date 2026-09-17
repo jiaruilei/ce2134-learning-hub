@@ -1,5 +1,9 @@
 // Teacher-reviewable introductory CE2134 practice. Tolerances are absolute,
 // in the displayed answer unit. Every numerical question states its assumptions.
+import {hydrostaticsQuestions} from './questions-hydrostatics.js';
+import {flowMassQuestions} from './questions-flow-mass.js';
+import {energyMomentumQuestions} from './questions-energy-momentum.js';
+
 export const questions = [
   {
     id: 'pressure-01', topic: 'pressure', title: 'At an open free surface',
@@ -451,4 +455,7 @@ export const questions = [
     takeaway: 'Hydrostatics is consistent with the zero-motion limit of the momentum balance.',
     tags: ['static-equilibrium', 'balance-selection'],
   },
+  ...hydrostaticsQuestions,
+  ...flowMassQuestions,
+  ...energyMomentumQuestions,
 ];

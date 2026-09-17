@@ -86,9 +86,10 @@ test('twelve-question mixed practice stays unique and includes all six base topi
 test('topic and connect sets contain only the requested material and respect available pool size', () => {
   for (const topic of topicIds) {
     const selected = makeSet(questions, {mode: 'topic', topic, count: 12}, () => 0.5);
-    assert.equal(selected.length, 6);
-    assert.equal(new Set(selected).size, 6);
+    assert.equal(selected.length, 12);
+    assert.equal(new Set(selected).size, 12);
     assert.ok(selected.every(id => byId.get(id).topic === topic));
+    assert.equal(makeSet(questions, {mode:'topic',topic,count:25}).length,20);
   }
   const connected = makeSet(questions, {mode: 'connect', count: 12}, () => 0.5);
   assert.equal(connected.length, 6);

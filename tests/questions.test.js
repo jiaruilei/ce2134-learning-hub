@@ -5,11 +5,11 @@ import {questions} from '../content/questions.js';
 const topicIds = ['pressure', 'forces', 'flowlines', 'continuity', 'bernoulli', 'momentum'];
 const byId = new Map(questions.map(question => [question.id, question]));
 
-test('the review bank has six complete, individually addressable questions per topic', () => {
-  assert.equal(questions.length, 42);
+test('the review bank has twenty complete, individually addressable questions per topic', () => {
+  assert.equal(questions.length, 126);
   assert.equal(byId.size, questions.length, 'Question IDs must be unique for saved attempts');
   for (const topic of [...topicIds, 'mixed']) {
-    assert.equal(questions.filter(question => question.topic === topic).length, 6, topic);
+    assert.equal(questions.filter(question => question.topic === topic).length, topic==='mixed'?6:20, topic);
   }
   for (const question of questions) {
     assert.match(question.id, /^[a-z]+-\d{2}$/);
@@ -48,7 +48,7 @@ test('choice submissions have one answer index and distinct visible options', ()
   assert.equal(Number(scaling.choices[scaling.answerIndex]), physicalAnswer);
 });
 
-test('all numeric answers satisfy independently evaluated mass, energy, force, or geometry balances', () => {
+test('legacy numeric answers retain their independently evaluated physical results', () => {
   const rho = 1000;
   const g = 9.8;
   const area = diameter => Math.PI * diameter ** 2 / 4;
@@ -76,7 +76,9 @@ test('all numeric answers satisfy independently evaluated mass, energy, force, o
     'mixed-02': (100000 + rho / 2 * (1 - (area(0.1) / area(0.05)) ** 2)) / 1000,
     'mixed-03': rho * (0.001 * Math.sqrt(2 * g * 5)) * Math.sqrt(2 * g * 5),
   };
-  const numeric = questions.filter(question => question.kind === 'numeric');
+  // New chapter additions have exhaustive independent oracles in the three
+  // questions-* test files. Keep these original answer checks intact.
+  const numeric = questions.filter(question => question.kind === 'numeric' && Number(question.id.split('-')[1])<=6);
   assert.equal(numeric.length, 19);
   assert.deepEqual(new Set(numeric.map(question => question.id)), new Set(Object.keys(expected)));
   for (const question of numeric) {

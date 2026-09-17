@@ -25,11 +25,13 @@ These are external lab launches, not embedded or copied applications. The hub do
 - Topic pages also offer Review, Interactive platform and the chapter's current practice action, wrapping on small screens.
 - Practice and completion summaries stay within each chapter. Active practice URLs identify the chapter so refreshing or using browser history restores the right set.
 - Six review modules with suggested foundations and connections between concepts.
-- **Six questions per chapter**, with retries of that chapter's missed questions. The source question bank retains all 42 questions, including six connecting questions reserved for future use; mixed-topic revision is not exposed in the interface.
+- **Twenty questions per chapter, six per practice session**, with retries of that chapter's missed questions. The source bank has 126 questions, including six connecting questions reserved for future use. Mixed-topic revision is not exposed in the interface.
 - Hints, worked solutions, answer tolerances and a session summary.
 - A personal review checklist, an unfinished-session resume option, and a **Clear progress** footer button. Clearing requires confirmation and returns to Topics.
 
-Each chapter uses its six-question pool; retry sets contain the questions missed in that chapter's last set. Existing attempts, review marks, and saved records are retained when the navigation changes. The bank is finite and does not generate new questions with AI.
+Each chapter rotates through its twenty-question pool. New sets prioritise questions not yet answered on this browser. Once the pool has been covered, selection favours the older half of the attempted questions to avoid immediate repetition. Within that selection, sets aim for two Foundation, three Apply and one Connect question, with a spread of concept tags and question types. The difficulty mix can vary when the remaining unseen questions or older candidate pool cannot supply that balance.
+
+The progress bars still count checked questions in the current set, normally out of six. Unfinished sessions keep their existing questions, order, answers and hints. Retry sets contain the questions missed in that chapter's last set. Existing attempts and review marks are retained. The bank is finite and does not generate new questions during student use.
 
 This is formative self-study practice. Answers and solutions are part of the public client-side source; the hub is not a secure examination or grading system.
 
@@ -66,7 +68,7 @@ The hub does not ask for a name, student number, email address or login. Its rev
 | Source | Purpose |
 | --- | --- |
 | `content/topics.js` | Module text, equations, assumptions, misconceptions, guided activities, prerequisite links and external lab URLs. |
-| `content/questions.js` | The question bank, answer keys, hints, worked solutions, tags and numerical tolerances. |
+| `content/questions.js`, `content/questions-*.js` | The question bank and chapter additions, answer keys, hints, worked solutions, tags and numerical tolerances. |
 | `lib/practice.js` | Grading, set selection, retry selection and session validation. |
 | `lib/storage.js` | Local browser progress storage. |
 | `mathjax-config.js`, `lib/math.js` | Local MathJax loading and equation rendering after navigation. |

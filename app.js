@@ -1,6 +1,6 @@
 import {topics} from './content/topics.js';
 import {questions} from './content/questions.js';
-import {gradeQuestion,makeSet} from './lib/practice.js';
+import {CHAPTER_SET_SIZE,gradeQuestion,makeSet} from './lib/practice.js';
 import {createStore} from './lib/storage.js';
 import {renderEquations,renderMathText as rich} from './lib/math.js';
 import {hasUnfinishedSession,normalizeSessions,topicProgress} from './lib/practice-flow.js';
@@ -36,7 +36,7 @@ function heading(title,extra=''){return `<div class="page-heading"><h1>${title}<
 function launch(t,label='Interactive platform'){return `<a class="button secondary" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">${label}<span class="sr-only"> (opens in a new tab)</span></a>`;}
 function topicCard(t){
   const progress=topicProgress(store.data.topicSessions[t.id]);
-  const total=progress.total||questions.filter(q=>q.topic===t.id).length;
+  const total=progress.total||Math.min(CHAPTER_SET_SIZE,questions.filter(q=>q.topic===t.id).length);
   const label=practiceLabel(t.id);
   return `<article class="topic-card" style="--topic-color:${esc(t.color)}"><a class="topic-card-main" href="#/topic/${t.id}"><div class="topic-card-top"><span class="topic-icon">${icon(t.id)}</span><span class="topic-number">${esc(t.number)}</span></div><h2>${esc(t.title)}</h2></a><div class="topic-practice-progress"><div class="topic-progress-label"><span>Practice progress</span><span>${progress.checked} / ${total}</span></div><progress max="${total}" value="${progress.checked}" aria-label="${esc(t.title)} practice progress: ${progress.checked} of ${total} questions checked"></progress></div><div class="topic-meta"><span>${store.data.reviewed[t.id]?'<span class="review-check">✓ Reviewed</span>':'Not reviewed'}</span></div><div class="topic-card-bottom"><a href="#/topic/${t.id}" aria-label="Review ${esc(t.title)}">Review</a><a class="card-practise" href="#/practice?topic=${t.id}" aria-label="${label}: ${esc(t.title)}">${label}</a><a class="platform-link" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" title="Opens in a new tab" aria-label="Interactive platform for ${esc(t.title)} (opens in a new tab)">Interactive platform</a></div></article>`;
 }
@@ -107,7 +107,7 @@ function begin(ids,mode,replaceRoute=false){
 function startChapter(topic,replaceRoute=false){
   activeTopic=topic;
   if(hasUnfinishedSession(currentSession())){showSession(replaceRoute);return;}
-  begin(makeSet(questions,{mode:'topic',topic,count:6}),'topic',replaceRoute);
+  begin(makeSet(questions,{mode:'topic',topic,count:CHAPTER_SET_SIZE,attempts:store.data.attempts}),'topic',replaceRoute);
 }
 function onRoute(){
   runVisible=false;activeTopic=null;formError='';
