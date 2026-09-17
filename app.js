@@ -90,7 +90,7 @@ function render(){
   else html=`${heading('Page not found')}<a class="button primary" href="#/">Topics →</a>`;
   main.innerHTML=(!store.available?'<div class="storage-alert" role="status">Browser storage is unavailable. You can practise, but progress may not survive closing this page.</div>':'')+html;
   void renderEquations(main);
-  document.title=`${page==='topic'?topicName(path.split('/')[2]):labels[page]||'Topics'} · CE2134 Learning Hub`;
+  document.title=`${page==='topic'?topicName(path.split('/')[2]):labels[page]||'Topics'} · CE2134 Learning Hub (Part 1)`;
 }
 function toast(text){clearTimeout(toastTimer);const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');toastTimer=setTimeout(()=>el.classList.remove('show'),3000);}
 function showSession(replaceRoute=false){

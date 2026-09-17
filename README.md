@@ -1,4 +1,4 @@
-# CE2134 Learning Hub
+# CE2134 Learning Hub (Part 1)
 
 A review and self-study hub that connects six existing CE2134 fluid-mechanics platforms. Each module combines learning objectives, essential equations, assumptions, common misconceptions, a guided lab activity and practice questions.
 
