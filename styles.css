@@ -131,6 +131,10 @@ main { padding: 24px; min-height: 440px; outline: none; }
 .equation-formula mjx-container[jax="SVG"][display="true"] { margin: .35em 0; }
 .inline-math { display: inline-block; white-space: nowrap; overflow-wrap: normal; }
 .inline-math mjx-container[jax="SVG"] { margin: 0; font-size: 1em; }
+.display-math { display: block; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: .25em 0; }
+.display-math mjx-container[jax="SVG"][display="true"] { margin: .35em 0; }
+.answer-option > span:last-child, .question-trail summary > span:nth-child(2) { min-width: 0; }
+.feedback li + li, .question-trail li + li { margin-top: .5em; }
 .equation p { font-size: 16px; color: var(--muted); margin: 8px 0 0; }
 .assumptions { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
 .assumptions summary { cursor: pointer; font-weight: 700; }

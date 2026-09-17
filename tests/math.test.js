@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {inlineMath,mathText,renderMathText,renderEquations} from '../lib/math.js';
+import {inlineMath,displayMath,mathText,renderMathText,renderEquations} from '../lib/math.js';
 
 test('prose keeps literal symbols and escapes HTML unless math is explicitly authored',()=>{
   assert.equal(renderMathText('x_y < 3 & $5'), 'x_y &lt; 3 &amp; $5');
@@ -15,6 +15,13 @@ test('inline math attributes and fallback text cannot inject markup',()=>{
   assert.match(html,/data-tex="x&quot; onmouseover=&quot;bad"/);
   assert.ok(html.includes('&lt;img src=x&gt;'));
   assert.ok(!html.includes('<img'));
+});
+
+test('worked calculations use display layout and retain an escaped readable fallback',()=>{
+  const html=renderMathText(mathText`Apply continuity: ${displayMath(String.raw`v=\frac{Q}{A}`,'v = Q/A < 3')}`);
+  assert.match(html,/class="display-math"/);
+  assert.match(html,/data-math-display="block">v = Q\/A &lt; 3<\/span>/);
+  assert.ok(html.startsWith('Apply continuity: '));
 });
 
 test('inline notation uses inline layout while display equations and navigation remain safe',async()=>{
