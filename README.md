@@ -19,18 +19,17 @@ These are external lab launches, not embedded or copied applications. The hub do
 
 ## Review and practice
 
-- One Topics homepage links to all six modules; summary statistics live in Progress. Older `#/topics` bookmarks redirect to the homepage.
+- One Topics homepage links to all six modules. There are no separate Practice or Progress pages. Older `#/topics`, `#/progress`, and general-practice bookmarks return to Topics.
 - Each light-blue topic card has a practice progress bar and its own Practice / Resume practice button. The bar counts checked questions in that chapter's saved set, not correct answers. Completed sets offer Practice again.
 - Each chapter saves its own question order, checked answers, hints and place. Starting or resuming another chapter preserves all other chapter sessions. The Topics homepage has no shared practice button.
 - Topic pages also offer Review, Interactive platform and the chapter's current practice action, wrapping on small screens.
-- Mixed revision, connecting concepts and general retries remain available under Practice, with custom settings separately. Their shared session is independent of the six chapter sessions. Active practice URLs identify the chapter so refreshing or using browser history restores the right set.
+- Practice and completion summaries stay within each chapter. Active practice URLs identify the chapter so refreshing or using browser history restores the right set.
 - Six review modules with suggested foundations and connections between concepts.
-- **42 fixed, editable questions:** six per topic, plus six questions connecting multiple topics; 19 numerical and 23 multiple-choice questions.
-- Topic practice, mixed revision, connecting problems and retries of questions most recently answered incorrectly.
+- **Six questions per chapter**, with retries of that chapter's missed questions. The source question bank retains all 42 questions, including six connecting questions reserved for future use; mixed-topic revision is not exposed in the interface.
 - Hints, worked solutions, answer tolerances and a session summary.
-- A personal review checklist, practice accuracy, an unfinished-session resume option and a downloadable JSON copy of the browser's practice record.
+- A personal review checklist, an unfinished-session resume option, and a **My record** footer menu with Download my record and Clear progress. Clearing requires confirmation and returns to Topics.
 
-A six-question mixed set includes one question from each topic. Longer mixed sets use additional distinct questions. A topic or connecting-problem set uses its six-question pool; retry sets use the available missed questions. The bank is finite and does not generate new questions with AI.
+Each chapter uses its six-question pool; retry sets contain the questions missed in that chapter's last set. Existing attempts, review marks, and saved records are retained when the navigation changes. The bank is finite and does not generate new questions with AI.
 
 This is formative self-study practice. Answers and solutions are part of the public client-side source; the hub is not a secure examination or grading system.
 
@@ -59,7 +58,7 @@ The hub does not ask for a name, student number, email address or login. Its rev
 - Hub practice is not sent to an instructor dashboard or a reporting service and is not synchronised with the external labs.
 - Clearing browser site data removes the saved record. The hub also provides a clear-record action with confirmation.
 - If browser storage is unavailable, practice continues in memory and the page displays a notice that progress may not survive closing the page.
-- **Download my record** creates a JSON file for personal reference. It does not submit that file to anyone.
+- **Download my record** creates a JSON file with checked answers, review marks and saved practice sessions for personal reference. It does not submit that file to anyone.
 
 “Marked reviewed” is a student's own checklist entry. Practice accuracy describes recorded hub attempts; it is not evidence of lab completion or a course grade.
 
